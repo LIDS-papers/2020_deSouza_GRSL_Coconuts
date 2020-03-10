@@ -1,0 +1,67 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Include other packages here, before hyperref.
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\m}[1]{\pmb{\mathrm{#1}}}
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+% \cvprfinalcopy % *** Uncomment this line for the final submission
+
+\def\cvprPaperID{****} % *** Enter the EV Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+% Pages are numbered in submission mode, and unnumbered in camera-ready
+\ifcvprfinal\pagestyle{empty}\fi
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{Learning filters from markers}
+\author{Italos Estilon de Souza\\
+Institute of Computing - University of Campinas (UNICAMP)\\
+Institution1 address\\
+{\tt\small italos.souza@ic.unicamp.br}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+\and
+Alexandre Falcão\\
+{\tt\small afalcao@ic.unicamp.br}
+}
+
+\maketitle
+%\thispagestyle{empty}
+
+%%%%%%%%% ABSTRACT
+
+
+%%%%%%%%% BODY TEXT
+\section{Introduction}
+
+\section{Preliminaries}
+
+Let $D \subset \Z^d$ for $d > 1$ and let $\m{I}: D \to \R^b$, with $b \ge 1$, be a function that assings to each $p \in D$ a vector $\m{I}(p) = (I_1(p), I_2(p), \ldots, I_b(p))$.
+A multi-band and multi-dimensional image is a pair ${\hat{I} = (D, \m{I})}$. We say that $D$ is the \textit{image domain}, $\m{I}(p)$ is the \textit{local feature vector} of a space element (\textit{spel}) $p \in D$, $b$ is the number of bands, and $d$ is the number of dimensions. In this work, we focus on images with $d=2$.
+
+An adjacency relation $\A \subseteq D \times D$ is a binary relation between spels $p, q \in D$. We focus on reflexive and translation-invariant relations. More precisely, we focus on adjacency relations given by $\A_{i,j} = \{ (p, q) \in D : \|x_p - x_q\| \le i, \|y_p - y_q\| \le j \}$
+{\small
+\bibliographystyle{ieee_fullname}
+\bibliography{egbib}
+}
+
+\end{document}
