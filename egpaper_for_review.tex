@@ -170,7 +170,9 @@ Given the set of patches $\Pa(\pDD)$ of the subset of images $\pDD$, we use a cl
 
 However, for it to work properly, patches and images need to be centered at the origin. For this, we use the information from the patches to calculate the mean and standard deviation per band. If the patches are representative of images of $\pDD$ the mean and standard deviation (per band) of $\Pa$ are very close to the mean and standard deviation (per band) of $\pDD$.
 
-Observe que a convolução em um spel $p \in D$ corresponde ao produto interno do vetor de carterísticas locais extendido e o vetor que representa o filtro. Dessa forma, seja $H$ um híperplano ortogonal ao vetor de uma filtro $\mF$. Esse hyperplano divide o espaço em três partes: os pontos de um lado do hyperplano, os pontos do outro lado e os pontos no hyperplano. Vetores parecidos com o vetor do filtro $\mF$ devem cair do mesmo lado do hiperplano que $\mF$. Ou seja, se o vetor $\E(p)$ está do mesmo lado de $H$ que $\mF$, entao o produto interno entre $\E(p)$ e $\mF$ é positivo, e é negativo caso contrário.
+Note that the convolution in a spel $p \in D$ corresponds to the doct product of the locally extended feature vecture and the vector that represents the filter. Thus, let $H$ be a hyperplane orthogonal to the vector of a $\mF$ filter. Thus, let $ H $ be a hyperplane orthogonal to the vector of a $ \mF$ filter. Vectors similar to the vector of filter $\mF$ must fall on the same side of the hyperplane as $\mF$. That is, if the vector $\E(p)$ is on the same side of $H$ as $\mF$, then the doct product between $\E (p)$ and $\mF$ is positive, and is negative otherwise. Thus, the doct product between the center of a cluster and each of the vectors of that cluster must be positive, which implies that the center is a good filter to identify the pattern described by that cluster. In the Figure (fazer a figura) we can see an example.
+
+Since all the patches used to produce the filters are centered around the origin, as well as the images of $\D$, we have that the hyperplanes ortogonal to the filters contain the origin, therefor there is no need for bias.
 
 \begin{figure}[t]
   \begin{center}
