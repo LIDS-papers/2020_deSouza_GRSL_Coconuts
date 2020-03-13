@@ -112,7 +112,7 @@ Batch normalization is the operation that places the origin of
 $\R^{b\times |\A|}$ at the center of the cloud of points
 $\E(p)$, for $p\in D$, from all images $\hat{I}\in
 \D$, and then makes those clouds of points for all $p\in D$ so
-hyperspherical as possible. This can be done independently, per
+hyperspherical as possible \cite{ioffe2015batch}. This can be done independently, per
 position and band, by transforming each image $\I=(D_I,\lI)$
 into an image $\hat{N}=(D_I,{\bf N})$, ${\bf
   N}(p)=(N_1(p),N_2(p),\ldots,N_b(p))\in \R^b$, where
@@ -159,7 +159,7 @@ whenever
 
 Given an image $\I = (D, \lI)$ of a dataset $\D$ such that each image has some category $\omega \in \{1, 2, \ldots, c\}$, a \textit{marker} is a pair $(p, \omega)$ where $p \in D$. We denote by $M(\I)$ a set of markers for image $\I$. For a marker $m = (p, \omega) \in M(\I)$, a \textit{patch} is the locally expanded feauture vector of $p$ with respect to some adjacency relation $\A$. We denote by $P(\I, M, \A)$ the set of patches of an image $\I$ with respect to a set of markers and an adjacency relation.
 
-\section{Literature review}
+\section{Related work}
 
 \section{The method}
 Our method is based on the idea that the network designer is an expert in the application domain or knows well enough to indicate which are the relevant characteristics of the objects of interest. The designer highlights these regions by placing markers. For each marker, the extended local feature vector is taken. These vectors are clustered and the centers of the clusterizes are used as convolutional layer filters.
@@ -174,6 +174,8 @@ Note that the convolution in a spel $p \in D$ corresponds to the doct product of
 
 Since all the patches used to produce the filters are centered around the origin, as well as the images of $\D$, we have that the hyperplanes ortogonal to the filters contain the origin, therefor there is no need for bias.
 
+Each convolutional layer is trained individually, one layer at a time. After the convolution operation, we apply the ReLU function to eliminate negative activations and the max pooling operation to aggregate local information. We preserve the output dimensions of convolutional layers so that we can use the same markers used in the previous layer. The new patches are generated from the convolutional layer output and the whole process is repeated to find the filters of the next layer.
+
 \begin{figure}[t]
   \begin{center}
      \includegraphics[width=0.8\linewidth]{figures/tile0705-markers.png}
@@ -182,7 +184,9 @@ Since all the patches used to produce the filters are centered around the origin
   \label{fig:ex-markers}
 \end{figure}
 
-\begin{figure}[t]
+To exemplify how our method works, we apply it to the problem of segmenting rock images into vegetation, rock and fractures. In Figure \ref{fig:ex-markers} we can see an example of the markers added by the network designer in regions that she considers relevant to characterize each of the classes.
+
+\begin{figure*}[t]
   \centering
   \begin{subfigure}[b]{0.37\textwidth}
       \includegraphics[width=\textwidth]{figures/probabilidade-fratura.png}
@@ -204,33 +208,72 @@ Since all the patches used to produce the filters are centered around the origin
 
   \caption{Probability maps for the classes.}
   \label{fig:prob_map}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[t]
+We designed a neural network with two convolutional layers and used the features extracted by it to produce the probability maps that we can see in Figure \ref{fig:prob_map}, one for each class.
+
+\begin{figure*}[t]
   \centering
   \begin{subfigure}[b]{0.37\textwidth}
-      \includegraphics[width=\textwidth]{figures/fratura.png}
-      \caption{Segmentation of fractures.}
-      \label{fig:prob-fractures}
+    \includegraphics[width=\textwidth]{figures/fratura.png}
+    \caption{Segmentation of fractures.}
+    \label{fig:segm-fractures}
   \end{subfigure}
   ~
   \begin{subfigure}[b]{0.37\textwidth}
-      \includegraphics[width=\textwidth]{figures/rocha.png}
-      \caption{Segmentation of rocks.}
-    \label{fig:prob-rocks}
+    \includegraphics[width=\textwidth]{figures/rocha.png}
+    \caption{Segmentation of rocks.}
+    \label{fig:segm-rocks}
   \end{subfigure}
   ~
   \begin{subfigure}[b]{0.37\textwidth}
-      \includegraphics[width=\textwidth]{figures/vegetacao.png}
-      \caption{Segmentation of vegetation vegetation.}
-  \label{fig:prob-vegetation}
-  \end{subfigure}
+    \includegraphics[width=\textwidth]{figures/vegetacao.png}
+    \caption{Segmentation of vegetation vegetation.}
+  \label{fig:segm-vegetation}
+\end{subfigure}
 
-  \caption{Segemetation of classes.}
-  \label{fig:prob_map}
-\end{figure}
+\caption{Segemetation of classes.}
+\label{fig:segm}
+\end{figure*}
+
+The probability maps were used to produce the segmentations that we can see in Figure \ ref {fig: segm}. For simplify viewing, each image shows the segmentation of one class.
 
 \section{Experiments}
+To evaluate our method in a quantitative way, we need a dataset with a ground truth and unfortunately the rock image dataset was not properly labeled.
+
+So, we chose to use a dataset formed from patches of coconut images. The dataset consists of images of dimensions $90 \times 90$ of coconut and non-coconut. The latter class having a large variability. The problem of interest is to classify the images in one of the two classes.
+
+As in reality, labeling images is a costly and time-consuming process, we assume that we only knew the true labels of a small set of samples (one hundred images for each class, totaling two hundred images). That way, we would have only those two hundred images to train any models that we would use to try to solve the problem.
+
+To reduce the impact of chance on the results, we randomly selected three sets of 200 images for training and three sets of 11387 images for testing. We wanted to represent a scenario where the network designer did not have much effort to annotate all these images.
+
+From each of these sets of training images, we selected 4 images using the 2D space projection of the 200 images using the tSNE. We tried to select images that were part of more cohesive groups. Thus, these images are more likely to have characteristics that represent their group.
+
+We placed markers on these images in regions that we consider important to identify the coconut and non-coconut (more diverse) classes. An example of a coconut tree image with markers can be seen in the Figure.
+
+With the markers, we created a convolutional layer with filters of dimensions $7 \times 7$. We did a padding to preserve the dimensions of the images. The network architecture can be seen in the Figure. We used a classifier similar to that of VGG.
+
+For clustering to find the convolutional layer filters, we used K-means to cluster the coconut tree patches in 35 clusters and the non-coconut tree patches in also 35 clusters.
+
+As the experiments were repeated three times, we reported the mean and standard deviation for each of the metrics in the test set. The results can be seen in the Table \ref{tab:results}.
+
+\begin{table*}[h]
+  \begin{center}
+  \begin{tabular}{|l|c|c|c|}
+  \hline
+   Method & Precision & Recall & F-score \\
+  \hline\hline
+  Ours & $0.86 \pm 0.01$ & $0.84 \pm 0.02$ & $0.85 \pm 0.02$\\
+  Ours (back) & $0.86 \pm 0.01$ & $0.84 \pm 0.02$ & $0.84 \pm 0.02$\\
+  VGG & $0.84 \pm 0.01$ & $0.76 \pm 0.03$ & $0.77 \pm 0.02 $ \\
+  VGG (fine tuned) & $0.84 \pm 0.01$ & $0.75 \pm 0.03$ & $0.77 \pm 0.02 $ \\
+  \hline
+  \end{tabular}
+  \end{center}
+  \caption{Results.}
+  \label{tab:results}
+  \end{table*}
+  
 
 \section{Conclusions and future work}
 
