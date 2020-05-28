@@ -1,6 +1,5 @@
-\documentclass[10pt,twocolumn,letterpaper]{article}
+\documentclass[a4paper,conference]{IEEEtran}
 
-\usepackage{cvpr}
 \usepackage{times}
 \usepackage{epsfig}
 \usepackage{graphicx}
@@ -275,7 +274,7 @@ We placed markers on these images in regions that we consider important to ident
   \label{fig:non-coco-markers}
 \end{figure}
 
-With the markers, we created a convolutional layer with filters of dimensions $7 \times 7$. We did a padding to preserve the dimensions of the images. The network architecture can be seen in the Figure. We used a classifier similar to that of VGG.
+With the markers, we created a convolutional layer with filters of dimensions $7 \times 7$. We did a padding to preserve the dimensions of the images. The network architecture can be seen in the Figure. We used a classifier similar to that of VGG-16.
 
 For clustering to find the convolutional layer filters, we used K-means to cluster the coconut tree patches in 35 clusters and the non-coconut tree patches in also 35 clusters.
 
@@ -288,9 +287,9 @@ As the experiments were repeated three times, we reported the mean and standard 
    Method & Precision & Recall & F-score \\
   \hline\hline
   Ours & $0.86 \pm 0.01$ & $0.84 \pm 0.02$ & $0.85 \pm 0.02$\\
-  Ours (back) & $0.86 \pm 0.01$ & $0.84 \pm 0.02$ & $0.84 \pm 0.02$\\
-  VGG & $0.84 \pm 0.01$ & $0.76 \pm 0.03$ & $0.77 \pm 0.02 $ \\
-  VGG (fine tuned) & $0.84 \pm 0.01$ & $0.75 \pm 0.03$ & $0.77 \pm 0.02 $ \\
+  Ours (fine tuned) & $0.86 \pm 0.01$ & $0.84 \pm 0.02$ & $0.84 \pm 0.02$\\
+  VGG-16 & $0.84 \pm 0.01$ & $0.76 \pm 0.03$ & $0.77 \pm 0.02 $ \\
+  VGG-16 (fine tuned) & $0.84 \pm 0.01$ & $0.75 \pm 0.03$ & $0.77 \pm 0.02 $ \\
   \hline
   \end{tabular}
   \end{center}
