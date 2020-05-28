@@ -1,22 +1,65 @@
+%% bare_conf.tex
+%% V1.4b
+%% 2015/08/26
+%% by Michael Shell
+%% See:
+%% http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.8b or later) with an IEEE
+%% conference paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/pkg/ieeetran
+%% and
+%% http://www.ieee.org/
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE!
+%% User assumes all risk.
+%% In no event shall the IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%*************************************************************************
+
+
+
 \documentclass[a4paper,conference]{IEEEtran}
 
-\usepackage{times}
-\usepackage{epsfig}
-\usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{amssymb}
+\def\citepunt{,}
 
-% Include other packages here, before hyperref.
+\usepackage[pdftex]{graphicx}
+\ifCLASSOPTIONcompsoc
+  \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\else
+  \usepackage[caption=false,font=footnotesize]{subfig}
+\fi
+\usepackage{comment}
+\usepackage{float}
+\usepackage{mathtools}
 
 \usepackage{subcaption}
 \usepackage{siunitx}
 
-% If you comment hyperref and then uncomment it, you should delete
-% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
-% run, let it finish, and you should be clear).
-\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
-
-\usepackage{comment}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\A}{\mathcal{A}}
@@ -38,6 +81,9 @@
 \newcommand{\M}{\mathcal{M}}
 \newcommand{\Pa}{\mathcal{P}}
 \newcommand{\pDD}{\D^\prime}
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
 
 \begin{document}
 
@@ -164,11 +210,11 @@ Given the set of patches $\Pa(\pDD)$ of the subset of images $\pDD$, we use a cl
 
 However, for it to work properly, patches and images need to be centered at the origin. For this, we use the information from the patches to calculate the mean and standard deviation per band. If the patches are representative of images in $\D$, the mean and standard deviation (per band) of $\Pa$ are very close to the mean and standard deviation (per band) in $\D$.
 
-\begin{figure}[t]
+\begin{figure}
   \begin{center}
      \includegraphics[width=0.8\linewidth]{figures/filter.png}
   \end{center}
-     \caption{Filter learned from clustering.}
+  \caption{Filter learned from clustering.}
   \label{fig:filter}
 \end{figure}
 
@@ -178,7 +224,7 @@ Since all the patches used to produce the filters are centered around the origin
 
 Each convolutional layer is trained individually, one layer at a time. After the convolution operation, we apply the ReLU function to eliminate negative activations and the max pooling operation to aggregate local information. We preserve the output dimensions of convolutional layers so that we can use the same markers used in the previous layer. The new patches are generated from the convolutional layer output and the whole process is repeated to find the filters of the next layer.
 
-\begin{figure}[t]
+\begin{figure}
   \begin{center}
      \includegraphics[width=0.8\linewidth]{figures/tile0705-markers.png}
   \end{center}
@@ -188,7 +234,7 @@ Each convolutional layer is trained individually, one layer at a time. After the
 
 To exemplify how our method works, we apply it to the problem of segmenting rock images into vegetation, rock and fractures. In Figure \ref{fig:ex-markers} we can see an example of the markers added by the network designer in regions that she considers relevant to characterize each of the classes.
 
-\begin{figure*}[t]
+\begin{figure*}
   \centering
   \begin{subfigure}[b]{0.33\textwidth}
       \includegraphics[width=\textwidth]{figures/probabilidade-fratura.png}
@@ -214,7 +260,7 @@ To exemplify how our method works, we apply it to the problem of segmenting rock
 
 We designed a neural network with two convolutional layers and used the features extracted by it to produce the probability maps that we can see in Figure \ref{fig:prob_map}, one for each class.
 
-\begin{figure*}[t]
+\begin{figure*}
   \centering
   \begin{subfigure}[b]{0.33\textwidth}
     \includegraphics[width=\textwidth]{figures/fratura.png}
@@ -253,7 +299,7 @@ From each of these sets of training images, we selected 4 images using the 2D sp
 
 We placed markers on these images in regions that we consider important to identify the coconut and non-coconut (more diverse) classes. An example of a coconut tree image with markers can be seen in Figure \ref{fig:coco-markers} and non-coconut tree image with markers in Figure \ref{fig:non-coco-markers}.
 
-\begin{figure}[h!]
+\begin{figure}
   \begin{center}
      \includegraphics[width=0.4\linewidth]{figures/coco_markers.png}
   \end{center}
@@ -261,7 +307,7 @@ We placed markers on these images in regions that we consider important to ident
   \label{fig:coco-markers}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}
   \begin{center}
      \includegraphics[width=0.4\linewidth]{figures/non_coco-markers.png}
   \end{center}
@@ -295,9 +341,7 @@ As the experiments were repeated three times, we reported the mean and standard 
 
 \section{Conclusions and future work}
 
-{\small
-\bibliographystyle{ieee_fullname}
-\bibliography{egbib}
-}
+\bibliographystyle{IEEEtran}
+\bibliography{bibliography}
 
 \end{document}
