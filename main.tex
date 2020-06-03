@@ -56,6 +56,7 @@
 \usepackage{float}
 \usepackage{mathtools}
 \usepackage{amsfonts}
+\usepackage{bm}
 
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
@@ -121,6 +122,7 @@ Given the set of patches $\Pa(\pDD)$ of the subset of images $\pDD$, we use a cl
 
 However, for it to work properly, patches and images need to be centered at the origin. For this, we use the information from the patches to calculate the mean and standard deviation per band. If the patches are representative of images in $\D$, the mean and standard deviation (per band) of $\Pa$ are very close to the mean and standard deviation (per band) in $\D$.
 
+\begin{comment}
 \begin{figure}[t]
   \begin{center}
      \includegraphics[width=0.8\linewidth]{figures/filter.png}
@@ -128,10 +130,21 @@ However, for it to work properly, patches and images need to be centered at the 
   \caption{Filter learned from clustering.}
   \label{fig:filter}
 \end{figure}
+\end{comment}
+
+
+\begin{figure}[!t]
+  \centering
+  \subfloat[Groups of three classes centered on the origin.]{\includegraphics[width=.7\linewidth]{figures/example_groups/groups_centered}}
+  \\
+  \subfloat[Groups after applying convolution and activation operations.]{\includegraphics[width=.7\linewidth]{figures/example_groups/groups3d_centered}
+  \label{fig_second_case}}
+  \caption{Exemple of application of convolution with groups centers as filters' weightes.}
+  \label{fig:filter}
+\end{figure}
 
 
 Note that the convolution in a spel $p \in D$ corresponds to the doct product of the locally extended feature vecture and the vector that represents the filter. Thus, let $H$ be a hyperplane orthogonal to the vector of a $\mF$ filter. Thus, let $ H $ be a hyperplane orthogonal to the vector of a $ \mF$ filter. Vectors similar to the vector of filter $\mF$ must fall on the same side of the hyperplane as $\mF$. That is, if the vector $\E(p)$ is on the same side of $H$ as $\mF$, then the doct product between $\E (p)$ and $\mF$ is positive, and is negative otherwise. Thus, the doct product between the center of a cluster and each of the vectors of that cluster must be positive, which implies that the center is a good filter to identify the pattern described by that cluster. In the Figure \ref{fig:filter} we can see an example.
-
 
 Since all the patches used to produce the filters are centered around the origin, as well as the images of $\D$, we have that the hyperplanes ortogonal to the filters contain the origin, therefor there is no need for bias.
 
@@ -150,27 +163,40 @@ To reduce the impact of chance on the results, we randomly selected three sets o
 
 From each of these sets of training images, we selected 4 images using the 2D space projection of the 200 images using the tSNE. We tried to select images that were part of more cohesive groups. Thus, these images are more likely to have characteristics that represent their group.
 
-\begin{figure}[t]
-    \begin{center}
-       \includegraphics[width=0.4\linewidth]{figures/coco_markers.png}
-    \end{center}
-       \caption{Markers on an image which contains a coconut tree.}
-    \label{fig:coco-markers}
-  \end{figure}
-  
-  \begin{figure}[t]
-    \begin{center}
-       \includegraphics[width=0.4\linewidth]{figures/non_coco-markers.png}
-    \end{center}
-       \caption{Markers on an image which does not contain a coconut tree.}
-    \label{fig:non-coco-markers}
-  \end{figure}
+\begin{figure}[!t]
+    \centering
+    \subfloat[Markers on an image which contains a coconut tree.]{\includegraphics[width=.45\linewidth]{figures/markers1}
+    \label{fig:markers1}}
+    ~
+    \subfloat[Markers on an image which does not contain a coconut tree.]{\includegraphics[width=.45\linewidth]{figures/markers2}
+    \label{fig:markers2}}
+    \\
+    \subfloat[Markers on an image which does not contain a coconut tree.]{\includegraphics[width=.45\linewidth]{figures/markers3}
+    \label{fig:markers3}}
+    ~
+    \subfloat[Markers on an image which does not contain a coconut tree.]{\includegraphics[width=.45\linewidth]{figures/markers4}
+    \label{fig:markers4}}
+    \caption{Markers used for training.}
+\end{figure}
 
-We placed markers on these images in regions that we consider important to identify the coconut and non-coconut (more diverse) classes. An example of a coconut tree image with markers can be seen in Figure \ref{fig:coco-markers} and non-coconut tree image with markers in Figure \ref{fig:non-coco-markers}.
+We placed markers on these images in regions that we consider important to identify the coconut and non-coconut (more diverse) classes. An example of a coconut tree image with markers can be seen in Figure \ref{fig:markers1} and non-coconut tree image with markers in Figure \ref{fig:markers2}.
 
 With the markers, we created a convolutional layer with filters of dimensions $7 \times 7$. We did a padding to preserve the dimensions of the images. The network architecture can be seen in the Figure. We used a classifier similar to that of VGG-16.
 
 For clustering to find the convolutional layer filters, we used K-means to cluster the coconut tree patches in 35 clusters and the non-coconut tree patches in also 35 clusters.
+
+\begin{figure}
+  \centering
+  \subfloat[Visualization of original image feature space.]{\includegraphics[width=.45\linewidth]{figures/input}
+  \label{fig:vis-input}}
+  ~
+  \subfloat[Visualization of the feature extractor's outputs.]{\includegraphics[width=.45\linewidth]{figures/feature_extractor}
+  \label{fig:vis-feature-extractor}}
+  \\
+  \subfloat[Visualization of outputs from the last classifier hidden layer.]{\includegraphics[width=.45\linewidth]{figures/classifier}
+  \label{fig:vis-classifier}}
+  \caption{This image shows visualizations of the input images and the intermediate layer's outputs. Green points represent background images, and red points represent images that have a coconut tree. The projection from high dimensionality space to 2D was made using t-SNE. The original image shows much overlap between the classes; after applying the feature extractor with only one convolutional layer, we can see that the overlapping decreases considerably. Before the decision layer, the last layer put most of the images from one class on one side and the other on the other side.}
+\end{figure}
 
 As the experiments were repeated three times, we reported the mean and standard deviation for each of the metrics in the test set. The results can be seen in the Table \ref{tab:results}.
 
@@ -180,7 +206,7 @@ As the experiments were repeated three times, we reported the mean and standard 
   \hline
    Method & Precision & Recall & F-score \\
   \hline\hline
-  Ours & $0.86 \pm 0.01$ & $0.84 \pm 0.02$ & $0.85 \pm 0.02$\\
+    Ours & $\boldsymbol{0.86 \pm 0.01}$ & $0.84 \pm 0.02$ & $0.85 \pm 0.02$\\
   Ours (fine tuned) & $0.86 \pm 0.01$ & $0.84 \pm 0.02$ & $0.84 \pm 0.02$\\
   Ours with SVM & $0.81 \pm 0.02$ & $0.77 \pm 0.03$ & $0.78 \pm 0.02$\\
   VGG-16 & $0.84 \pm 0.01$ & $0.76 \pm 0.03$ & $0.77 \pm 0.02 $ \\
@@ -191,6 +217,8 @@ As the experiments were repeated three times, we reported the mean and standard 
   \caption{Results.}
   \label{tab:results}
 \end{table}
+
+\section{Conclusions}
 
 \bibliographystyle{IEEEtran}
 \bibliography{bibliography}
