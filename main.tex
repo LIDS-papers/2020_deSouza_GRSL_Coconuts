@@ -61,6 +61,8 @@
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
+\DeclareMathOperator{\vect}{vec}
+
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\A}{\mathcal{A}}
 \newcommand{\D}{\mathcal{D}}
@@ -94,7 +96,7 @@
 \maketitle
 
 \begin{abstract}
-    
+  Identifying the species of trees in a region is essential to identify the type of land use that is taking place. It is also essential to assess and monitor plantation performance and analyze the impact of natural disasters. The manual identification of these trees is tedious, costly, and error-prone, so the application of automatic methods is necessary. Deep learning is quite effective in applications from different domains; however, it usually needs a considerable amount of annotated data so that the models' appropriate training can be done. We propose a training method for feature extractors of convolutional neural networks that need only a minimal set of images. The method uses markers that the user places in relevant regions of the training images to learn the convolutional layers' filters. The method was applied to the problem of determining whether area image patches contain coconut trees or not. The model trained with this method achieved competitive results with state of the art.
 \end{abstract}
 
 \section{Introduction}
@@ -112,17 +114,16 @@ In this paper, we present some advances towards the answers to the questions (1)
 
 We propose a new way of learning the filters of the convolutional layers of deep neural networks that do not depend on the optimization of an error function and, therefore, do not need a large number of training samples. The training process is done with user intervention, which adds markers to the training images to indicate relevant features to characterize each class. To learn the filters, we get a patch around each marker of a class and cluster them. The centroid of each cluster is a filter that can be used to identify features of this cluster. The set of centroids of clusters of all clusters is the convolutional layer filters. For the next layer, the patches are generated on the output of the previous one. To evaluate our method, we use a dataset of aerial images to detect coconut trees. We identified that, with few layers and few training samples, we managed to get competitive results with state-of-the-art models.
 
-
 \section{Learning filters from markers}
-Our method is based on the idea that the network designer is an expert in the application domain or knows well enough to indicate which are the relevant characteristics of the objects of interest. The designer highlights these regions by placing markers, which are associate to pixels. For each marker, we create a extended feature vector by taken the pixel's feature vector and of its neiborhs. These vectors are clustered and the centers of those groups are used as filters for the current convolutional layer. Since each convolutional layer transforms the input feaure space of the images into a new one, the same procedure can be repeated to create the filters of the subsequents convolutional layers. This way, it is enough to specify the number of desired convolutional layers and their hyperparameters. 
+\label{sec:method}
 
-Let $\D$ be a dataset of images. For an image $I \in \D$, the adjacency $\A$ of a pixel $p = (x, y)$ of $I$ is a set pixels $\A(p) = \{ p_1, p_2, \ldots, p_n \}$. In this work, we only consider a paritcular case of adjacency, 
-\[\A_k(p) = \{(x^\prime, y^\prime) :\, \sqrt{(x - x^\prime)^2 + (y - y^\prime)^2} \le k\}.\]
-The designer draws markers on only a subset of the images, let's say $\pDD \subseteq \D$. That is, she produces for each $I \in \pDD$ a set of markers $\M(I)$.  This subset of images, using the information from the markers, is used to create a set of patches \[\Pa(\pDD) = \bigcup_{\I \in \pDD}{P(\I, \M, \A)},\] with respect to an adjacency relation also defined by the designer. In this work, we use only circular adjacency relations.
+Convolutional neural networks perform well in image classification tasks due to its capability of extracting features. That is, convolutional layers produce great descriptors that can be used by the classifier. Conventionally, during the training process, an algorithm tries to minimize a loss function that measures how good the classifier is performing with the features given by the feature extractor. The algorithm of optimization tries through backpropagation to find out which features to extract. Our method is based on the idea that the network designer is an expert in the application domain or knows well enough to indicate which are the relevant characteristics of the objects of interest. Hence, it does not rely on the optimization of some loss function to learn filters for those relevant characteristics. In our approach, the network designer highlights features that she believes are the ones that characterize each class by placing markers. Those markers are used to learn the filters to identify the features they represent.
 
-Given the set of patches $\Pa(\pDD)$ of the subset of images $\pDD$, we use a clustering algorithm to discover groups in $\Pa(\pDD)$. Each group represents local patterns from one or more classes, highlighted by the designer through the markers. Since the center of each cluster must be a good representative of the characteristics of the group, we can use the group centroids as filters to enhance those patterns in the images of $\D$.
+Let $\D$ be a dataset of images, and let $I \in \D$ be an image with dimensions $X \times Y$. A marker $m$ is associated with a pixel $p(m) = (x, y)$ and has a label $L(m) = c$. Let $M(I)$ be the set of markers of image $I$.  For each maker $m \in M(I)$, we create a patch $P$ with dimensions $k \times k$ from a window centered in the marker's pixel as $P(I, x ,y) = I(x+i, y+j)$ for $i, j = -\floor{k/2}, \ldots, \floor{k/2}$.We pad images with $0$ so that we can create patches from border pixels. For each class, we create a set of patches made using the markers of that class. Let \[\mathcal{P}_c = \bigcup_{ I \in \D, m \in M(I) :\, L(m) = c}{P(I, p(m))}\] be the set of all patches made from markers of class $c$.
 
-However, for it to work properly, patches and images need to be centered at the origin. For this, we use the information from the patches to calculate the mean and standard deviation per band. If the patches are representative of images in $\D$, the mean and standard deviation (per band) of $\Pa$ are very close to the mean and standard deviation (per band) in $\D$.
+Given set of patches $\Pa_c$, we can use a clustering algorithm to discover groups in $\Pa_c$. Each group represents local patterns of class $c$, highlighted by the designer through the markers. Since the centroid of each cluster must be a good representative of the characteristics of the group, we can use them as filters to enhance those patterns in the images of $\D$. We must do this for each class.
+
+However, for it to work properly, patches and images need to be centered at the origin. For this, we use the information from the patches of all classes to calculate the mean and standard deviation per band. If the patches are representative of images in $\D$, the mean and standard deviation per band of $\Pa$ are close to the mean and standard deviation per band in $\D$.
 
 \begin{comment}
 \begin{figure}[t]
@@ -135,35 +136,32 @@ However, for it to work properly, patches and images need to be centered at the 
 \end{comment}
 
 
+
+Let $F$ be a filter with dimension $k \times k$, and let $\pi$ be the patch around pixel $(x,y)$ also with dimension $k \times k$. By the definition of convolution in deep learning, we can interpret this operation for a pixel $(x, y)$ as the dot product between the kernel vector $\vect(F)$ and the vector of a patch $\vect(\pi)$ around this pixel, that is, the convolution in $(x, y)$ is the same as $\vect(F) \cdot \vect(\pi)$. Thus, let $H$ be a hyperplane orthogonal to vector $\vect(F)$. Vectors similar to $\vect(F)$ must fall on the same side of the hyperplane as $\vect(F)$. Therefore, if vector $\vect(\pi)$ is on the same side of $H$ as $\vect(F)$, then the doct product between $\vect(\pi)$ and $\vect(F)$ is positive, and it is negative otherwise. Thus, the doct product between the centroid of a cluster and each of the vectors of that cluster must be positive, which implies that the centroid is a good filter to identify the pattern described by that cluster. Hence, if we throw away the negative values, applying convolution with centroids as filters must highlight regions that has a certain pattern that the network designer believes is important.
+
+Since all the patches used to produce the filters are centered around the origin, as well as the images of $\D$, we have that the hyperplanes ortogonal to the filters contain the origin, therefor there is no need for bias.
+
+Each convolutional layer is trained individually, one layer at a time. After the convolution operation, we apply the ReLU function to eliminate negative activations and the max pooling operation to aggregate local information. We preserve the output dimensions of convolutional layers so that we can use the same markers used in the previous layer. The new patches are generated from the previeus convolutional layer output and the whole process is repeated to find the filters of the next one.
+
 \begin{figure}[!t]
   \centering
-  \subfloat[Groups of three classes centered on the origin.]{\includegraphics[width=.7\linewidth]{figures/example_groups/groups_centered}}
-  \\
-  \subfloat[Groups after applying convolution and activation operations.]{\includegraphics[width=.7\linewidth]{figures/example_groups/groups3d_centered}
-  \label{fig_second_case}}
+  \subfloat[Groups of three classes centered on the origin.\label{fig:ex-groups}]
+  {\includegraphics[width=.45\linewidth]{figures/example_groups/groups_centered}}
+  ~
+  \subfloat[Groups after applying convolution and activation operations. \label{fig:ex-groups-after}]{\includegraphics[width=.45\linewidth]{figures/example_groups/groups3d_centered}
+  }
   \caption{Exemple of application of convolution with groups centers as filters' weightes.}
   \label{fig:filter}
 \end{figure}
 
-
-Note that the convolution in a spel $p \in D$ corresponds to the doct product of the locally extended feature vecture and the vector that represents the filter. Thus, let $H$ be a hyperplane orthogonal to the vector of a $\mF$ filter. Thus, let $ H $ be a hyperplane orthogonal to the vector of a $ \mF$ filter. Vectors similar to the vector of filter $\mF$ must fall on the same side of the hyperplane as $\mF$. That is, if the vector $\E(p)$ is on the same side of $H$ as $\mF$, then the doct product between $\E (p)$ and $\mF$ is positive, and is negative otherwise. Thus, the doct product between the center of a cluster and each of the vectors of that cluster must be positive, which implies that the center is a good filter to identify the pattern described by that cluster. In the Figure \ref{fig:filter} we can see an example.
-
-Since all the patches used to produce the filters are centered around the origin, as well as the images of $\D$, we have that the hyperplanes ortogonal to the filters contain the origin, therefor there is no need for bias.
-
-Each convolutional layer is trained individually, one layer at a time. After the convolution operation, we apply the ReLU function to eliminate negative activations and the max pooling operation to aggregate local information. We preserve the output dimensions of convolutional layers so that we can use the same markers used in the previous layer. The new patches are generated from the convolutional layer output and the whole process is repeated to find the filters of the next layer.
-
-To exemplify how our method works, we apply it to the problem of segmenting rock images into vegetation, rock and fractures. In Figure we can see an example of the markers added by the network designer in regions that she considers relevant to characterize each of the classes.
+To exemplify our method, we create a synthetic dataset of points of two classes. We can see this dataset in Figure \ref{fig:ex-groups}. The points are distributed in two regions, and it is not possible to separate the yellow class linearly from the violet class. To center the points,  we subtracted the mean and divided by the standard deviation. If we look only to violet points, it is clear that they form two clusters. In turn, the yellow dots form a single cluster. We then take the center of each of these three clusters and apply convolution to the set of points using these centers as filters. The result of the convolution after applying the ReLU function can be seen in Figure \ref{fig:ex-groups-after}. For most points after the transformation made by convolution and the ReLU function, only one coordinate was positive, this being the coordinate which value is the internal product with the center of the cluster of which these points are part. These points lie along the three axes of space $\mathbb{R}^3$, each cluster on an axis. The other points are farthest from their cluster center, and the internal product with the center of another cluster is also positive. Cluster centers functioned as good filters to detect similar points, even though they detected points from other clusters.
 
 \section{Experiments}
-To evaluate our method in a quantitative way, we need a dataset with a ground truth and unfortunately the rock image dataset was not properly labeled.
+We use a dataset formed from patches of coconut images. The dataset consists of images of dimensions $90 \times 90$ of coconut and non-coconut. The latter class has a large variability. The problem of interest is to classify the images in one of the two classes.
 
-So, we chose to use a dataset formed from patches of coconut images. The dataset consists of images of dimensions $90 \times 90$ of coconut and non-coconut. The latter class having a large variability. The problem of interest is to classify the images in one of the two classes.
+As in reality, labeling images is a costly and time-consuming process, and then we assume that we only knew the correct labels of a small set of samples (one hundred images for each class, totaling two hundred images). That way, we would have only those two hundred images to train any models that we would use to try to solve the problem.
 
-As in reality, labeling images is a costly and time-consuming process, we assume that we only knew the true labels of a small set of samples (one hundred images for each class, totaling two hundred images). That way, we would have only those two hundred images to train any models that we would use to try to solve the problem.
-
-To reduce the impact of chance on the results, we randomly selected three sets of 200 images for training and three sets of 11387 images for testing. We wanted to represent a scenario where the network designer did not have much effort to annotate all these images.
-
-From each of these sets of training images, we selected 4 images using the 2D space projection of the 200 images using the tSNE. We tried to select images that were part of more cohesive groups. Thus, these images are more likely to have characteristics that represent their group.
+To reduce the impact of chance on the results, we randomly selected three sets of 200 images for training and three sets of 11387 images for testing. We wanted to represent a scenario where the network designer did not have much effort to annotate all these images. From each of these sets of training images, we selected four images using the 2D space projection of the 200 images using the t-SNE. We tried to select images that were part of more cohesive groups. Thus, these images are more likely to have characteristics that represent their group.
 
 \begin{figure}[!t]
     \centering
@@ -179,13 +177,33 @@ From each of these sets of training images, we selected 4 images using the 2D sp
     \subfloat[Markers on an image which does not contain a coconut tree.]{\includegraphics[width=.45\linewidth]{figures/markers4}
     \label{fig:markers4}}
     \caption{Markers used for training.}
+    \label{fig:markers}
 \end{figure}
 
-We placed markers on these images in regions that we consider important to identify the coconut and non-coconut (more diverse) classes. An example of a coconut tree image with markers can be seen in Figure \ref{fig:markers1} and non-coconut tree image with markers in Figure \ref{fig:markers2}.
+We placed markers on these images in regions that we consider important to identify the coconut and non-coconut (more diverse) classes. In Figure \ref{fig:markers} we can the four images of one the splits. With the markers, we created a convolutional layer with filters of dimensions $7 \times 7$ using the method described in Section \ref{sec:method}. The network architecture can be seen in the Figure. We used a classifier similar to that of VGG-16. We used K-means to cluster the coconut tree patches in 30 clusters and the non-coconut tree patches in also 30 clusters to find the convolutional layer filter. 
 
-With the markers, we created a convolutional layer with filters of dimensions $7 \times 7$. We did a padding to preserve the dimensions of the images. The network architecture can be seen in the Figure. We used a classifier similar to that of VGG-16.
 
-For clustering to find the convolutional layer filters, we used K-means to cluster the coconut tree patches in 35 clusters and the non-coconut tree patches in also 35 clusters.
+\begin{table}[!t]
+  \begin{center}
+  \begin{tabular}{|l|c|c|c|}
+  \hline
+   Method & Precision & Recall & F-score \\
+  \hline\hline
+    I - Ours & $\boldsymbol{0.86 \pm 0.01}$ & $0.84 \pm 0.02$ & $0.85 \pm 0.02$\\
+    II - Ours (fine tuned) & $0.86 \pm 0.01$ & $0.84 \pm 0.02$ & $0.84 \pm 0.02$\\
+    III - Ours with SVM & $0.81 \pm 0.02$ & $0.77 \pm 0.03$ & $0.78 \pm 0.02$\\
+    IV - VGG & $0.84 \pm 0.01$ & $0.76 \pm 0.03$ & $0.77 \pm 0.02 $ \\
+    V - VGG (fine tuned) & $0.84 \pm 0.01$ & $0.75 \pm 0.03$ & $0.77 \pm 0.02 $ \\
+  \hline
+  \end{tabular}
+  \end{center}
+  \caption{Results.}
+  \label{tab:results}
+\end{table}
+
+We tested three scenarios: (I) using out method to learn the feature extractor weights and the classifier with backpropagation; (II) using our method as initialization and train the whole model with backpropagation; (III) using SVM Linear as classification. For VGG-16, we tested two secenarios: (IV) initializing with Xavier initialization and training from screath; (V) using ImageNet weights and training with the training set images. The results can be seen in Table \ref{tab:results}. As the experiments were repeated three times, we reported the mean and standard deviation of each the metrics in the test set. 
+
+Our method achieved better precision than conventionally trained VGG, and the difference between precision and recall is much smaller. The Linear SVM did not prove to be a good classifier like the MLP, but, on average, it still got a little better than the VGG-16. Using our method as initialization and training the entire network with backpropagation did not improve the result; this implies that the filters we created are already good filters given the training set. Our feature extractor training method was able to learn good filters from a minimal set of images. VGG has many parameters to learn, so it is susceptible to overfitting with such a small training set. We do not use any technique to handle small data sets to train VGG because we intended to verify our approach viability, and these techniques could also be used with our method.
 
 \begin{figure}
   \centering
@@ -200,27 +218,11 @@ For clustering to find the convolutional layer filters, we used K-means to clust
   \caption{This image shows visualizations of the input images and the intermediate layer's outputs. Green points represent background images, and red points represent images that have a coconut tree. The projection from high dimensionality space to 2D was made using t-SNE. The original image shows much overlap between the classes; after applying the feature extractor with only one convolutional layer, we can see that the overlapping decreases considerably. Before the decision layer, the last layer put most of the images from one class on one side and the other on the other side.}
 \end{figure}
 
-As the experiments were repeated three times, we reported the mean and standard deviation for each of the metrics in the test set. The results can be seen in the Table \ref{tab:results}.
-
-\begin{table}[!t]
-  \begin{center}
-  \begin{tabular}{|l|c|c|c|}
-  \hline
-   Method & Precision & Recall & F-score \\
-  \hline\hline
-    Ours & $\boldsymbol{0.86 \pm 0.01}$ & $0.84 \pm 0.02$ & $0.85 \pm 0.02$\\
-  Ours (fine tuned) & $0.86 \pm 0.01$ & $0.84 \pm 0.02$ & $0.84 \pm 0.02$\\
-  Ours with SVM & $0.81 \pm 0.02$ & $0.77 \pm 0.03$ & $0.78 \pm 0.02$\\
-  VGG-16 & $0.84 \pm 0.01$ & $0.76 \pm 0.03$ & $0.77 \pm 0.02 $ \\
-  VGG-16 (fine tuned) & $0.84 \pm 0.01$ & $0.75 \pm 0.03$ & $0.77 \pm 0.02 $ \\
-  \hline
-  \end{tabular}
-  \end{center}
-  \caption{Results.}
-  \label{tab:results}
-\end{table}
+To understand how the feature extractor trained with our method transforms the image spaces, we made projections of three stages of the network using t-SNE. In Figure \ref{fig:vis-input}, we can see the projection of the original images (in the LAB color space). Red points are images that contain coconut trees, and green points are images that do not contain coconut trees. In the projection in the image of Figure \ref{fig:vis-input}, we see that the images of coconut trees and non-coconut trees are almost entirely overlapping. Coconut tree images are more frequent in some regions but are very dispersed. In the image of Figure \ref{fig:vis-feature-extractor}, we see the projection of the feature extractor output. The coconut tree images are more concentrated, forming some clusters, and it is possible to notice that there is much less overlap. Finally, we see in Figure \ref{fig:vis-classifier} the output of the previous layer of the decision layer of the classifier. The classifier managed to organize conquest and non-coconut images in different regions of space, although there is overlap as the model failed to achieve 100\% accuracy.
 
 \section{Conclusions}
+
+We present a way to train a feature extractor without using backpropagation capable of learning good filters from a minimal set of images. To evaluate the method, we proposed experiments to classify images that contain achievements. Our approach has achieved competitive results with state of the art.
 
 \bibliographystyle{IEEEtran}
 \bibliography{bibliography}
