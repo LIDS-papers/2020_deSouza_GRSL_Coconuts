@@ -113,7 +113,7 @@
 Deep learning has proven to be applicable to different tasks, from image classification to data synthesis \cite{goodfellow2016deep}. In remote sensing, the applications have involved segmentation of terrain images \cite{kemker2018algorithms, kampffmeyer2016semantic, hamaguchi2018effective}, building identification \cite{xu2018building, lu2018detecting, liu2018multilevel}, and deforestation monitoring \cite{bragilevsky2017deep}. In this work, we are interested in 
  identifying species of trees from aerial images. The topic is important for land-use classification, plantation monitoring during a season, and damage assessment of natural disasters, such as drilling and flooding. As these plantations can span very large areas, manual identification can be costly, tedious, and susceptible to errors, so automatic methods are necessary. 
 
-Classification of tree species in aerial images has been actively investigated~\cite{fassnacht2016review}. In \cite{puttemans2018comparing}, Puttemans et al. present a solution to detect coconut trees based on deep learning. Aparta et al. \cite{aparna2018cnn} apply convolutional neural networks to count coconut trees on plantations in India. Vargas-Muñoz et al. \cite{8899005} propose an active learning approach to detect coconut trees that seeks to reduce the effort of annotating images. The \cite{8899005} approach is divided into a stage of producing candidate patches for having a coconut tree and a stage where a CNN determines whether a patch has a coconut tree. We propose a different way to produce this classifier.  
+Classification of tree species in aerial images has been actively investigated~\cite{fassnacht2016review}. In \cite{puttemans2018comparing, aparna2018cnn}, the authors present solutions to detect coconut trees based on convolutional neural network (CNN) models. Vargas-Muñoz et al.~\cite{8899005} propose an active learning approach to reduce human effort in annotating images of coconut trees. They divide the problem in two stages: a stage that produces candidate image patches and a stage in which a CNN identifies the candidate patches with a coconut tree. We propose a different way to produce this classifier.  
 
 Despite this success, methods based on deep learning require a lot of annotated images for training, and annotating this volume of data is quite costly. Even interactive methods require large training sets. If these methods depend on huge training sets, their application may not be feasible in areas where it is impossible, or the cost of gathering and annotating these data sets is prohibitive. Much of the user's interaction with methods based on deep learning occurs through the annotation of the training set, and the user does not have much influence on the training process.
 
@@ -198,9 +198,7 @@ Each convolutional layer is trained individually, one layer at a time. After the
       };
 
   \end{tikzpicture}
-
   \end{center}
-  \caption[An output example of the algorithm to compute a core stable coalition structure.]{An output example of the algorithm to compute a core stable coalition structure for games represented by forests. Each color represents a coalition.}
   \label{fig:tree}
 \end{figure}
 
