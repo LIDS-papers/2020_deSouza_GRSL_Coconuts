@@ -90,13 +90,13 @@
 
 \begin{document}
 
-\title{Learning filters from user provided image makers}
+\title{Learning filters from user provided image makers for convolutional neural networks}
 
 % make the title area
 \maketitle
 
 \begin{abstract}
-  Identifying the species of trees in a region is essential to identify the type of land use that is taking place. It is also essential to assess and monitor plantation performance and analyze the impact of natural disasters. The manual identification of these trees is tedious, costly, and error-prone, so the application of automatic methods is necessary. Deep learning is quite effective in applications from different domains; however, it usually needs a considerable amount of annotated data so that the models' appropriate training can be done. We propose a training method for feature extractors of convolutional neural networks that need only a minimal set of images. The method uses markers that the user places in relevant regions of the training images to learn the convolutional layers' filters. The method was applied to the problem of determining whether area image patches contain coconut trees or not. The model trained with this method achieved competitive results with state of the art.
+  Identifying the species of trees in a region is essential to identify the type of land use that is taking place. It is also essential to assess and monitor plantation performance and analyze the impact of natural disasters. The manual identification of these trees is tedious, costly, and error-prone, so the application of automatic methods is necessary. Deep learning is quite effective in applications from different domains; however, it usually needs a considerable amount of annotated data so that the models' appropriate training can be done. As deep as the model gets, it needs more data. We propose a training method for feature extractors of convolutional neural networks that need only a minimal set of images and that the CNN designer has more control over. The method uses markers that the user places in relevant regions of some training images to learn the convolutional layers' filters allowing the user to interfere with the training process directly. As this method does not rely on backpropagation or minimization of some cost function to learn the feature extractor filters, it does not require many training images. The method was applied to the problem of determining whether area image patches contain coconut trees or not. The model trained with this method achieved competitive results with state of the art.
 \end{abstract}
 
 \section{Introduction}
@@ -157,7 +157,7 @@ Each convolutional layer is trained individually, one layer at a time. After the
 To exemplify our method, we create a synthetic dataset of points of two classes. We can see this dataset in Figure \ref{fig:ex-groups}. The points are distributed in two regions, and it is not possible to separate the yellow class linearly from the violet class. To center the points,  we subtracted the mean and divided by the standard deviation. If we look only to violet points, it is clear that they form two clusters. In turn, the yellow dots form a single cluster. We then take the center of each of these three clusters and apply convolution to the set of points using these centers as filters. The result of the convolution after applying the ReLU function can be seen in Figure \ref{fig:ex-groups-after}. For most points after the transformation made by convolution and the ReLU function, only one coordinate was positive, this being the coordinate which value is the internal product with the center of the cluster of which these points are part. These points lie along the three axes of space $\mathbb{R}^3$, each cluster on an axis. The other points are farthest from their cluster center, and the internal product with the center of another cluster is also positive. Cluster centers functioned as good filters to detect similar points, even though they detected points from other clusters.
 
 \section{Experiments}
-We use a dataset formed from patches of aerial images made by \cite{8899005} from imagery provided by WeRobotics. The imagery with a resolution of 8cm was captured by the World Bank's UAVs for Disaster Resilience Program, collaborating with WeRobotics and OpenAerialMap in the Kindom of Tonga in October 2017. The Humanitarian OpenStreetMap community provided the annotation. The dataset consists of 13587 patches of dimensions $90 \times 90$ of coconut (10268) and non-coconut (3319). The latter class has a large variability. The problem of interest is to classify the images in one of the two classes.
+We use a dataset formed from patches of aerial images made by \cite{8899005} from imagery provided by WeRobotics. The imagery with a resolution of 8cm was captured by the World Bank's UAVs for Disaster Resilience Program, collaborating with WeRobotics and OpenAerialMap in the Kindom of Tonga in October 2017. The Humanitarian OpenStreetMap community provided the annotation. The dataset consists of 13587 patches of dimensions $90 \times 90$ of coconut (10268) and non-coconut (3319). The latter class has a large variability. The problem of interest is to classify the images in one of the two classes. We only report experiments with one dataset due to the space limitation.
 
 As in reality, labeling images is a costly and time-consuming process, and then we assume that we only knew the correct labels of a small set of samples (one hundred images for each class, totaling two hundred images). That way, we would have only those two hundred images to train any models that we would use to try to solve the problem.
 
@@ -165,18 +165,18 @@ To reduce the impact of chance on the results, we randomly selected three sets o
 
 \begin{figure}[!t]
     \centering
-    \subfloat[Markers on an image which contains a coconut tree.]{\includegraphics[width=.45\linewidth]{figures/markers1}
-    \label{fig:markers1}}
+    \subfloat[\label{fig:markers1}]{\includegraphics[width=.3\linewidth]{figures/markers1}
+    }
     ~
-    \subfloat[Markers on an image which does not contain a coconut tree.]{\includegraphics[width=.45\linewidth]{figures/markers2}
-    \label{fig:markers2}}
+    \subfloat[\label{fig:markers2}]{\includegraphics[width=.3\linewidth]{figures/markers2}
+    }
     \\
-    \subfloat[Markers on an image which does not contain a coconut tree.]{\includegraphics[width=.45\linewidth]{figures/markers3}
-    \label{fig:markers3}}
+    \subfloat[\label{fig:markers3}]{\includegraphics[width=.3\linewidth]{figures/markers3}
+    }
     ~
-    \subfloat[Markers on an image which does not contain a coconut tree.]{\includegraphics[width=.45\linewidth]{figures/markers4}
-    \label{fig:markers4}}
-    \caption{Markers used for training.}
+    \subfloat[\label{fig:markers4}]{\includegraphics[width=.3\linewidth]{figures/markers4}
+    }
+    \caption{Markers used for training. (a) Markers on an image which contains a coconut tree. (b) Markers on an image which does not contain a coconut tree. (c) Markers on an image which does not contain a coconut tree. (d) Markers on an image which does not contain a coconut tree.}
     \label{fig:markers}
 \end{figure}
 
@@ -188,11 +188,11 @@ We placed markers on these images in regions that we consider important to ident
   \hline
    Method & Precision & Recall & F-score \\
   \hline\hline
-    I - Ours & $\boldsymbol{0.86 \pm 0.01}$ & $0.84 \pm 0.02$ & $0.85 \pm 0.02$\\
-    II - Ours (fine tuned) & $0.86 \pm 0.01$ & $0.84 \pm 0.02$ & $0.84 \pm 0.02$\\
-    III - Ours with SVM & $0.81 \pm 0.02$ & $0.77 \pm 0.03$ & $0.78 \pm 0.02$\\
-    IV - VGG & $0.84 \pm 0.01$ & $0.76 \pm 0.03$ & $0.77 \pm 0.02 $ \\
-    V - VGG (fine tuned) & $0.84 \pm 0.01$ & $0.75 \pm 0.03$ & $0.77 \pm 0.02 $ \\
+    I-Ours & $\boldsymbol{0.86 \pm 0.01}$ & $\boldsymbol{0.84 \pm 0.02}$ & $\boldsymbol{0.85 \pm 0.02}$\\
+    II-Ours (fine tuned) & $\boldsymbol{0.86 \pm 0.01}$ & $\boldsymbol{0.84 \pm 0.02}$ & $0.84 \pm 0.02$\\
+    III-Ours with SVM & $0.81 \pm 0.02$ & $0.77 \pm 0.03$ & $0.78 \pm 0.02$\\
+    IV-VGG & $0.84 \pm 0.01$ & $0.76 \pm 0.03$ & $0.77 \pm 0.02 $ \\
+    V-VGG (fine tuned) & $0.84 \pm 0.01$ & $0.75 \pm 0.03$ & $0.77 \pm 0.02 $ \\
   \hline
   \end{tabular}
   \end{center}
@@ -200,24 +200,50 @@ We placed markers on these images in regions that we consider important to ident
   \label{tab:results}
 \end{table}
 
-We tested three scenarios: (I) using out method to learn the feature extractor weights and the classifier with backpropagation; (II) using our method as initialization and train the whole model with backpropagation; (III) using SVM Linear as classification. For VGG-16, we tested two secenarios: (IV) initializing with Xavier initialization and training from screath; (V) using ImageNet weights and training with the training set images. The results can be seen in Table \ref{tab:results}. As the experiments were repeated three times, we reported the mean and standard deviation of each the metrics in the test set. 
 
-Our method achieved better precision than conventionally trained VGG, and the difference between precision and recall is much smaller. The Linear SVM did not prove to be a good classifier like the MLP, but, on average, it still got a little better than the VGG-16. Using our method as initialization and training the entire network with backpropagation did not improve the result; this implies that the filters we created are already good filters given the training set. Our feature extractor training method was able to learn good filters from a minimal set of images. VGG has many parameters to learn, so it is susceptible to overfitting with such a small training set. We do not use any technique to handle small data sets to train VGG because we intended to verify our approach viability, and these techniques could also be used with our method.
+We tested three scenarios: (I) using out method to learn the feature extractor weights and the classifier with backpropagation; (II) using our method as initialization and train the whole model with backpropagation; (III) using SVM Linear as classification. For VGG-16, we tested two secenarios: (IV) initializing with Xavier initialization and training from screath; (V) using ImageNet weights and training with the training set images. The results can be seen in Table \ref{tab:results}. As the experiments were repeated three times, we reported the mean and standard deviation of each the metrics in the test set. 
 
 \begin{figure}
   \centering
-  \subfloat[Visualization of original image feature space.]{\includegraphics[width=.45\linewidth]{figures/input}
-  \label{fig:vis-input}}
+  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/ours/upper-coco-108.png}
+  }
   ~
-  \subfloat[Visualization of the feature extractor's outputs.]{\includegraphics[width=.45\linewidth]{figures/feature_extractor}
-  \label{fig:vis-feature-extractor}}
+  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/ours/upper-coco-2473.png}
+  }
+  ~
+  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/ours/upper-non_coco-506.png}
+  }
   \\
-  \subfloat[Visualization of outputs from the last classifier hidden layer.]{\includegraphics[width=.45\linewidth]{figures/classifier}
-  \label{fig:vis-classifier}}
-  \caption{This image shows visualizations of the input images and the intermediate layer's outputs. Red points represent background images, and green points represent images that have a coconut tree. The projection from high dimensionality space to 2D was made using t-SNE. The original image shows much overlap between the classes; after applying the feature extractor with only one convolutional layer, we can see that the overlapping decreases considerably. Before the decision layer, the last layer put most of the images from one class on one side and the other on the other side.}
+  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/vgg/lower-coco-1098.png}
+  }
+  ~
+  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/vgg/lower-coco-2400.png}
+  }
+  ~
+  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/vgg/lower-non_coco-105.png}
+  }
+  \label{fig:ex-classification}
+  \caption{Misclassified images. The first row has images misclassified by the network trained by our method, and the second row has images misclassified by VGG-16. The two first images of a row have coconut trees.}
 \end{figure}
 
-To understand how the feature extractor trained with our method transforms the image spaces, we made projections of three stages of the network using t-SNE. In Figure \ref{fig:vis-input}, we can see the projection of the original images (in the LAB color space). Red points are images that contain coconut trees, and green points are images that do not contain coconut trees. In the projection in the image of Figure \ref{fig:vis-input}, we see that the images of coconut trees and non-coconut trees are almost entirely overlapping. Coconut tree images are more frequent in some regions but are very dispersed. In the image of Figure \ref{fig:vis-feature-extractor}, we see the projection of the feature extractor output. The coconut tree images are more concentrated, forming some clusters, and it is possible to notice that there is much less overlap. Finally, we see in Figure \ref{fig:vis-classifier} the output of the previous layer of the decision layer of the classifier. The classifier managed to organize conquest and non-coconut images in different regions of space, although there is overlap as the model failed to achieve 100\% accuracy.
+Our method achieved better precision than conventionally trained VGG, and the difference between precision and recall is much smaller. The Linear SVM did not prove to be a good classifier like the MLP, but, on average, it still got a little better than the VGG-16. Using our method as initialization and training the entire network with backpropagation did not improve the result; this implies that the filters we created are already good filters given the training set. Our feature extractor training method was able to learn good filters from a minimal set of images. VGG has many parameters to learn, so it is susceptible to overfitting with such a small training set. We do not use any technique to handle small data sets to train VGG because we intended to verify our approach viability, and these techniques could also be used with our method.
+
+
+
+\begin{figure}
+  \centering
+  \subfloat[\label{fig:vis-input}]{\includegraphics[width=.3\linewidth]{figures/input}
+  }
+  ~
+  \subfloat[\label{fig:vis-feature-extractor}]{\includegraphics[width=.3\linewidth]{figures/feature_extractor}
+  }
+  ~
+  \subfloat[]{\includegraphics[width=.3\linewidth]{figures/classifier}
+  \label{fig:vis-classifier}}
+  \caption{This image shows visualizations of the input images and the intermediate layer's outputs. Red points represent background images, and green points represent images that have a coconut tree. The projection from high dimensionality space to 2D was made using t-SNE. The original image shows much overlap between the classes; after applying the feature extractor with only one convolutional layer, we can see that the overlapping decreases considerably. Before the decision layer, the last layer put most of the images from one class on one side and the other on the other side. (a) Visualization of original image feature space. (b) Visualization of the feature extractor's outputs. (c) Visualization of outputs from the last classifier hidden layer.}
+\end{figure}
+
+As motivated by Rauber et al. \cite{rauber2016visualizing}, we made projections of three stages of the network using t-SNE \cite{maaten2008visualizing} to understand how the feature extractor trained with our method transforms the image spaces. In Figure \ref{fig:vis-input}, we can see the projection of the original images (in the LAB color space). Red points are images that contain coconut trees, and green points are images that do not contain coconut trees. In the projection in the image of Figure \ref{fig:vis-input}, we see that the images of coconut trees and non-coconut trees are almost entirely overlapping. Coconut tree images are more frequent in some regions but are very dispersed. In the image of Figure \ref{fig:vis-feature-extractor}, we see the projection of the feature extractor output. The coconut tree images are more concentrated, forming some clusters, and it is possible to notice that there is much less overlap. Finally, we see in Figure \ref{fig:vis-classifier} the output of the previous layer of the decision layer of the classifier. The classifier managed to organize conquest and non-coconut images in different regions of space, although there is overlap as the model failed to achieve 100\% accuracy.
 
 \section{Conclusions}
 
