@@ -57,6 +57,8 @@
 \usepackage{mathtools}
 \usepackage{amsfonts}
 \usepackage{bm}
+\usepackage{pgf,tikz,pgfplots}
+\usetikzlibrary{calc}
 
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
@@ -83,6 +85,14 @@
 \newcommand{\M}{\mathcal{M}}
 \newcommand{\Pa}{\mathcal{P}}
 \newcommand{\pDD}{\D^\prime}
+
+\definecolor{navy}{RGB}{0,0,137}
+\definecolor{tealDeer}{RGB}{148,232,180}
+\definecolor{dodgerBlue}{RGB}{18,161,255}
+\definecolor{citrine}{RGB}{230, 194, 8}
+\definecolor{violet}{RGB}{112,5,164}
+\definecolor{navyPurple}{RGB}{172,86,253}
+\definecolor{heliotrope}{RGB}{236,93,253}
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -136,7 +146,6 @@ However, for it to work properly, patches and images need to be centered at the 
 \end{comment}
 
 
-
 Let $F$ be a filter with dimension $k \times k$, and let $\pi$ be the patch around pixel $(x,y)$ also with dimension $k \times k$. By the definition of convolution in deep learning, we can interpret this operation for a pixel $(x, y)$ as the dot product between the kernel vector $\vect(F)$ and the vector of a patch $\vect(\pi)$ around this pixel, that is, the convolution in $(x, y)$ is the same as $\vect(F) \cdot \vect(\pi)$. Thus, let $H$ be a hyperplane orthogonal to vector $\vect(F)$. Vectors similar to $\vect(F)$ must fall on the same side of the hyperplane as $\vect(F)$. Therefore, if vector $\vect(\pi)$ is on the same side of $H$ as $\vect(F)$, then the doct product between $\vect(\pi)$ and $\vect(F)$ is positive, and it is negative otherwise. Thus, the doct product between the centroid of a cluster and each of the vectors of that cluster must be positive, which implies that the centroid is a good filter to identify the pattern described by that cluster. Hence, if we throw away the negative values, applying convolution with centroids as filters must highlight regions that has a certain pattern that the network designer believes is important.
 
 Since all the patches used to produce the filters are centered around the origin, as well as the images of $\D$, we have that the hyperplanes ortogonal to the filters contain the origin, therefor there is no need for bias.
@@ -152,6 +161,48 @@ Each convolutional layer is trained individually, one layer at a time. After the
   }
   \caption{Exemple of application of convolution with groups centers as filters' weightes: (a) Groups of three classes centered on the origin; (b) Groups after applying convolution and activation operations. }
   \label{fig:filter}
+\end{figure}
+
+\begin{figure}
+  \begin{center}
+  \tikzset{
+    treenode/.style = {shape=rectangle, rounded corners,
+                       draw=black, align=center, line width=width},
+    specialedge/.style = {line width=1.5pt}
+  }
+
+  \begin{tikzpicture}
+    [
+      grow                    = down,
+      sibling distance        = 5em,
+      level distance          = 3em,
+      edge from parent/.style = {draw=black},
+      every node/.style       = {treenode},
+      sloped
+    ]
+    \node [treenode, fill=tealDeer, label = {[label distance = 0.5em]}] (v0) {Conv$(60 \times 7 \times 7)$}
+      child {
+        child {
+          child {
+                child {
+                  node [treenode, fill=navyPurple] {Classifier}
+                  edge from parent
+                }
+                node [treenode, fill=tealDeer] {BatchNorm}
+                edge from parent
+           }
+          node [treenode, fill=tealDeer] {MaxPool$(3\times3)$}
+          edge from parent
+        }
+        node [treenode, fill=dodgerBlue, label = {[label distance = 0.5em] }] {ReLU} 
+        edge from parent
+      };
+
+  \end{tikzpicture}
+
+  \end{center}
+  \caption[An output example of the algorithm to compute a core stable coalition structure.]{An output example of the algorithm to compute a core stable coalition structure for games represented by forests. Each color represents a coalition.}
+  \label{fig:tree}
 \end{figure}
 
 To exemplify our method, we create a synthetic dataset of points of two classes. We can see this dataset in Figure \ref{fig:ex-groups}. The points are distributed in two regions, and it is not possible to separate the yellow class linearly from the violet class. To center the points,  we subtracted the mean and divided by the standard deviation. If we look only to violet points, it is clear that they form two clusters. In turn, the yellow dots form a single cluster. We then take the center of each of these three clusters and apply convolution to the set of points using these centers as filters. The result of the convolution after applying the ReLU function can be seen in Figure \ref{fig:ex-groups-after}. For most points after the transformation made by convolution and the ReLU function, only one coordinate was positive, this being the coordinate which value is the internal product with the center of the cluster of which these points are part. These points lie along the three axes of space $\mathbb{R}^3$, each cluster on an axis. The other points are farthest from their cluster center, and the internal product with the center of another cluster is also positive. Cluster centers functioned as good filters to detect similar points, even though they detected points from other clusters.
@@ -190,7 +241,7 @@ We placed markers on these images in regions that we consider important to ident
   \hline\hline
     I-Ours & $\boldsymbol{0.86 \pm 0.01}$ & $\boldsymbol{0.84 \pm 0.02}$ & $\boldsymbol{0.85 \pm 0.02}$\\
     II-Ours (fine tuned) & $\boldsymbol{0.86 \pm 0.01}$ & $\boldsymbol{0.84 \pm 0.02}$ & $0.84 \pm 0.02$\\
-    III-Ours with SVM & $0.81 \pm 0.02$ & $0.77 \pm 0.03$ & $0.78 \pm 0.02$\\
+    III-Ours with SVM & $0.836 \pm 0.015 $ & $ 0.793 \pm 0.025$ & $ 0.804 \pm 0.022$\\
     IV-VGG & $0.84 \pm 0.01$ & $0.76 \pm 0.03$ & $0.77 \pm 0.02 $ \\
     V-VGG (fine tuned) & $0.84 \pm 0.01$ & $0.75 \pm 0.03$ & $0.77 \pm 0.02 $ \\
   \hline
@@ -226,7 +277,7 @@ We tested three scenarios: (I) using out method to learn the feature extractor w
   \label{fig:ex-classification}
 \end{figure}
 
-Our method achieved better precision than conventionally trained VGG, and the difference between precision and recall is much smaller. The Linear SVM did not prove to be a good classifier like the MLP, but, on average, it still got a little better than the VGG-16. Using our method as initialization and training the entire network with backpropagation did not improve the result; this implies that the filters we created are already good filters given the training set. Our feature extractor training method was able to learn good filters from a minimal set of images. VGG has many parameters to learn, so it is susceptible to overfitting with such a small training set. We do not use any technique to handle small data sets to train VGG because we intended to verify our approach viability, and these techniques could also be used with our method. In Figure \ref{fig:ex-classification} we can see examples of misclassified images. In these images, coconut trees appear in different angles, sizes, and shapes, or the boundaries between the coconut tree and the background are tenuous, making it more difficult to identify them. In turn, images that do not contain coconut trees, contain trees that resemble their shape.
+Our method achieved better precision than conventionally trained VGG, and the difference between precision and recall is much smaller. The Linear SVM did not prove to be a good classifier like the MLP, but, on average, it still got a little better than the VGG-16. Using our method as initialization and training the entire network with backpropagation did not improve the result; this implies that the filters we created are already good filters given the training set. Our feature extractor training method was able to learn good filters from a minimal set of images. VGG has many parameters to learn, so it is susceptible to overfitting with such a small training set. We do not use any technique to handle small data sets to train VGG because we intended to verify our approach viability, and these techniques could also be used with our method. In Figure \ref{fig:ex-classification} we can see examples of misclassified images. In these images, coconut trees appear in different angles, sizes, and shapes, or the boundaries between the coconut tree and the background are tenuous, making it more difficult to identify them. In turn, images that do not contain coconut trees, contain trees that resemble their shape. The nete
 
 \begin{figure}
   \centering
