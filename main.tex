@@ -126,31 +126,17 @@ We demonstrate the advantages of this interactive technique on binary image clas
 \section{FLIM: Feature Learning  from Image Markers}
 \label{sec:method}
   
-A well-trained CNN model should detect image regions that best discriminate classes as positive activations, improve class separation in those regions by eliminating negative activations, and aggregate the resulting activations (pooling and flattening) into a highly dimensional and sparse feature space, in which even a linear classifier should separate the classes with reasonable success. Nevertheless, it is common to assume that the classes are at least piecewise linearly separable and use fully connected layers -- a Multi-Layer Perceptron (MLP) classifier -- for feature space reduction and classification.
+A well-trained CNN model should detect image regions that best discriminate classes as positive activations, improve class separation in those regions by eliminating negative activations, and aggregate the resulting activations (pooling and flattening) into a highly dimensional and sparse feature space, in which even a linear classifier should separate the classes with reasonable success. Nevertheless, it is common to assume that the classes are at least piecewise linearly separable and use fully connected layers -- a Multi-Layer Perceptron (MLP) classifier -- for feature space reduction and classification. The training of a CNN usually rely on  weight optimization by backpropagation, which requires a higher number of annotated images as deeper is the model. In FLIM, we eliminate the need for backpropagation by finding a set ${\cal F}$ of filters that can detect discriminant regions from all classes. 
 
-The training of a CNN usually rely on  weight optimization by backpropagation, which requires a higher number of annotated images as deeper is the model. In FLIM, we eliminate the need for backpropagation by finding a set ${\cal F}$ of filters that can detect discriminant regions from all classes. 
+In FLIM, the user selects a few training images $I$ to compose a very small dataset $\D$ and draws labeled markers in image regions that best discriminate the classes. We wish to estimate the weights of filters $F\in {\cal F}$, such that the convolution between an image $I$ and $F$ will generate positive activations in regions whose local patterns are detected by $F$. In order to understand this process, one must interpret the convolution operation at a pixel $p$ of $I$ as the inner product $\vect\left[P_I(p)\right] \cdot  \vect\left[F\right]$, where $P_I(p)$ is a patch with $k\times k$ pixels and $m$ image channels around $p$, $F$ is a filter with $k\times k\times m$ weights, and $\vect\left[.\right]$ is the vectorization operation. A filter $F$ can discriminate a class $i\in \{1,2,\ldots,c\}$ among $c$ classes when it generates positive results for local patterns $\vect\left[P_I(p)\right]$ of class $i$ and negative results for patterns from other classes. That is, $\vect\left[F\right]$ plays the role of a normal vector of a hyperplane in $\Re^{k\times k\times m}$ and we expect that ${\cal F}$ will contain filters to detect local patterns from all classes in different positions $p$. 
 
-The user selects a few training images $I$ to compose a very small dataset $\D$ and draws labeled markers in image regions that best discriminate the classes. We with to estimate the weights of filters $F\in {\cal F}$, such that the convolution between an image $I$ and $F$ will generate positive activations in regions whose pattern is represented by $F$. 
-
-
-For a problem with $c$ classes, let $\lambda(p)=i\in \{1,2,\ldots,c\}$ be the label of a marker pixel $p$ from class $i$. Let ${\cal M}_I$ be a set of marker pixels drawn in image $I$ and $P_I(p)$ be a patch of size $k\times k$ pixels and $m$ image channels, around a marker pixel $p\in {\cal M}_I$. The patch values compose a \emph{local feature vector} $\vect\left[P_I(p)\right]$ with $k\times k\times m$ values. Let ${\cal P}$ be the set of all patches around marker pixels from all images $I\in {\cal D}$, with representative examples  $\vect\left[P_I(p)\right]$ from each of the $c$ classes.  
+For a problem with $c$ classes where $\lambda(p)=i\in \{1,2,\ldots,c\}$ is the label of a marker pixel $p$ from class $i$, let ${\cal M}_I$ be a set of marker pixels drawn in image $I\in {\cal D}$ and $P_I(p)$ be the respective patch around a pixel $p\in {\cal M}_I$. Let ${\cal P}$ be the set of all patches around marker pixels from all images $I\in {\cal D}$, with representative examples  $\vect\left[P_I(p)\right]$ from all $c$ classes.  
 \begin{eqnarray}
 {\cal P} & = & \bigcup_{I\in {\cal D},p\in {\cal M}_I, \lambda(p)\in [1,c]} P_I(p)
 \label{eq.pset}
 \end{eqnarray}
-The patch set ${\cal P}$ defines samples from all classes in a local feature space $\Re^{k\times k\times m}$. 
+The patch set ${\cal P}$ defines samples from all classes in $\Re^{k\times k\times m}$ and we should expect that a clustering operation will create groups with similar local patterns. Ideally, each group should contain local patterns of a same class. However, especially in the first layers, some classes might share similar patterns and we should at least expect that they will be detected in different regions of the image. The groups must be shifted to the origin of $\Re^{k\times k\times m}$ by subtracting the mean vector of the samples in ${\cal P}$. Optionally, the standard deviation of each feature can be computed and used for feature standardization. We call this operation \emph{patch-based normalization}. The centroid of each cluster defines the weights of each filter $F\in {\cal F}$ and we also force norm $1$ to avoid preferences among them. This centralization for filter definition is paramount to eliminate activations in regions from other classes, whose patterns fall in the negative side of the hyperplane represented by $\vect\left[F\right]$. Figure~\ref{fig:filter} illustrates how it works. ....
 
-The classes are usually not separated in this space but the convolution of an image $I$ with a set of filters ${\cal F}$ of sizes $k\times k\times m$ should facilitate their separation in the new space 
-
-
-is equivalent to computing the inner product between $\vect\left[P_I(q)\right]$ and  $\vect\left[F\right]$ for all pixels $q$ in the image $I$. 
-
-
- A marker $m$ is associated with a pixel $p(m) = (x, y)$ and has a label $L(m) = c$. Let $M(I)$ be the set of markers of image $I$.  For each maker $m \in M(I)$, we create a patch $P$ with dimensions $k \times k$ from a window centered in the marker's pixel as $P(I, x ,y) = I(x+i, y+j)$ for $i, j = -\floor{k/2}, \ldots, \floor{k/2}$.We pad images with $0$ so that we can create patches from border pixels. For each class, we create a set of patches made using the markers of that class. Let \[\mathcal{P}_c = \bigcup_{ I \in \D, m \in M(I) :\, L(m) = c}{P(I, p(m))}\] be the set of all patches made from markers of class $c$.
-
-Given set of patches $\Pa_c$, we can use a clustering algorithm to discover groups in $\Pa_c$. Each group represents local patterns of class $c$, highlighted by the designer through the markers. Since the centroid of each cluster must be a good representative of the characteristics of the group, we can use them as filters to enhance those patterns in the images of $\D$. We must do this for each class.
-
-However, for it to work properly, patches and images need to be centered at the origin. For this, we use the information from the patches of all classes to calculate the mean and standard deviation per band. If the patches are representative of images in $\D$, the mean and standard deviation per band of $\Pa$ are close to the mean and standard deviation per band in $\D$.
 
 \begin{comment}
 \begin{figure}[t]
@@ -163,9 +149,9 @@ However, for it to work properly, patches and images need to be centered at the 
 \end{comment}
 
 
-Let $F$ be a filter with dimension $k \times k$, and let $\pi$ be the patch around pixel $(x,y)$ also with dimension $k \times k$. By the definition of convolution in deep learning, we can interpret this operation for a pixel $(x, y)$ as the dot product between the kernel vector $\vect(F)$ and the vector of a patch $\vect(\pi)$ around this pixel, that is, the convolution in $(x, y)$ is the same as $\vect(F) \cdot \vect(\pi)$. Thus, let $H$ be a hyperplane orthogonal to vector $\vect(F)$. Vectors similar to $\vect(F)$ must fall on the same side of the hyperplane as $\vect(F)$. Therefore, if vector $\vect(\pi)$ is on the same side of $H$ as $\vect(F)$, then the dot product between $\vect(\pi)$ and $\vect(F)$ is positive, and it is negative otherwise. Thus, the dot product between the centroid of a cluster and each of the vectors of that cluster must be positive, which implies that the centroid is a good filter to identify the pattern described by that cluster. Hence, if we throw away the negative values, applying convolution with centroids as filters must highlight regions with a certain pattern that the network designer believes is important.
+%Let $F$ be a filter with dimension $k \times k$, and let $\pi$ be the patch around pixel $(x,y)$ also with dimension $k \times k$. By the definition of convolution in deep learning, we can interpret this operation for a pixel $(x, y)$ as the dot product between the kernel vector $\vect(F)$ and the vector of a patch $\vect(\pi)$ around this pixel, that is, the convolution in $(x, y)$ is the same as $\vect(F) \cdot \vect(\pi)$. Thus, let $H$ be a hyperplane orthogonal to vector $\vect(F)$. Vectors similar to $\vect(F)$ must fall on the same side of the hyperplane as $\vect(F)$. Therefore, if vector $\vect(\pi)$ is on the same side of $H$ as $\vect(F)$, then the dot product between $\vect(\pi)$ and $\vect(F)$ is positive, and it is negative otherwise. Thus, the dot product between the centroid of a cluster and each of the vectors of that cluster must be positive, which implies that the centroid is a good filter to identify the pattern described by that cluster. Hence, if we throw away the negative values, applying convolution with centroids as filters must highlight regions with a certain pattern that the network designer believes is important.
 
-Since all patches used to produce the filters are centered around the origin, as well as the images of $\D$, we have that the hyperplanes orthogonal to the filters contain the origin. Therefore, there is no need for bias.
+%Since all patches used to produce the filters are centered around the origin, as well as the images of $\D$, we have that the hyperplanes orthogonal to the filters contain the origin. Therefore, there is no need for bias.
 
 Each convolutional layer is trained individually, one layer at a time. After the convolution operation, we apply the ReLU function to eliminate negative activations and the max pooling operation to aggregate local information. We preserve the convolutional layers' output dimensions so that we can use the same markers used in the previous layer. The new patches are generated from the previous convolutional layer output, and the whole process is repeated to find the filters of the next one.
 
@@ -269,28 +255,6 @@ We placed markers on these images in regions that we consider important to ident
   \caption{Results.}
   \label{tab:results}
 \end{table}
-
-\begin{table*}
-  \begin{center}
-  \begin{tabular}{|l|c|c|c|c|c|c| }
-  \hline
-   Method & Pr0 & Pr1 & Re0 & Re1 & Fs0 & Fs1 \\
-  \hline\hline
-      FLIM + SVM & $0.933 \pm 0.003 $ & $ 0.612 \pm 0.038$ & $ 0.838 \pm 0.024$ & $0.809 \pm 0.007 $ & $ 0.883 \pm 0.014$ & $0.697 \pm 0.025 $ \\ 
-       VGG-FE + SVM & $0.941 \pm 0.005$ & $0.580 \pm 0.013$ & $0.809 \pm 0.014 $ & $ 0.839 \pm 0.016$ & $ 0.870 \pm 0.006$ & $0.686 \pm 0.005 $ \\\hline
-      
-      FLIM & $0.929 \pm 0.002$ & $0.654 \pm 0.016$ & $0.869 \pm 0.010$ & $0.789 \pm 0.009 $ & $0.898 \pm 0.004 $ & $ 0.715 \pm 0.006$ \\
-    FLIM-FT &  &  &  &  &  &  \\
-
-    VGG &  &  &  &  &  & \\
-    VGG-FT & $0.948 \pm 0.001$ & $0.629 \pm 0.032$ & $0.841 \pm 0.021 $ & $ 0.854 \pm 0.006$ & $ 0.891 \pm 0.012$ & $0.724 \pm 0.020 $  \\
-   
-  \hline
-  \end{tabular}
-  \end{center}
-  \caption{Results per class.}
-  \label{tab:results_per_class}
-\end{table*}
 
 
 We tested three scenarios: (I) using out method to learn the feature extractor weights and the classifier with backpropagation; (II) using our method as initialization and train the whole model with backpropagation; (III) using SVM Linear as classification. For VGG-16, we tested two scenarios: (IV) initializing with Xavier initialization and training from scratch; (V) using ImageNet weights and training with the training set images. The results can be seen in Table \ref{tab:results}. As the experiments were repeated three times, we reported the mean and standard deviation of each the metrics in the test set. 
