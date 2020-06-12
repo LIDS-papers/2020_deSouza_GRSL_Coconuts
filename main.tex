@@ -147,7 +147,7 @@ A clustering operation on ${\cal P}$ creates groups with similar local patterns.
   \label{fig:filter}
 \end{figure}
 
-Each convolutional layer is trained individually, one layer at a time, to find its filter set ${\cal F}$. The number of filters per layer depends on the clustering technique. We use $K$-means, then the user must specify the number $K=|{\cal F}|$ of filters. After the convolution operation, we apply the ReLU function to eliminate negative activations and the max-pooling operation to aggregate local information. Note that, apart from the initial marker selection, the training process is automatic. We have preserved the convolutional layers' output dimensions and the marker pixels used to find the filters of layer $L+1$ from the output of layer $L$ are always the same for all convolutional layers. Figure~\ref{fig:tree} shows one example of a simple network projected by FLIM for the experiments of the next section. 
+Each convolutional layer is trained individually, one layer at a time, to find its filter set ${\cal F}$. The number of filters per layer depends on the clustering technique. We use $K$-means, then the user must specify the number $K=|{\cal F}|$ of filters. After the convolution operation, we apply the ReLU function to eliminate negative activations and the max-pooling operation to aggregate local information. Note that, apart from the initial marker selection, the training process is automatic. We have preserved the convolutional layers' output dimensions and the marker pixels so we can find the filters of layer $L+1$ from the output of layer $L$. Figure~\ref{fig:tree} shows one example of a simple network projected by FLIM for the experiments of the next section. 
 
 \begin{figure}
   \begin{center}
