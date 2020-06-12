@@ -192,9 +192,19 @@ Each convolutional layer is trained individually, one layer at a time, to find i
 
 \section{Experiments}
 
-We use a dataset from~\cite{8899005}, which contains aerial images with or without one coconut tree for counting. These images belong to a large imagery from  
+We use a dataset from~\cite{8899005}, which contains regions of aerial images with and without coconut trees from the Kingdom of Tonga, as acquired in October 2017. Each region should be classified as containing one or none coconut tree, but part of coconut trees from adjacent regions might appears near the region's border. The Humanitarian OpenStreetMap community annotated the regions. The dataset consists of 13587 regions with $90 \times 90$ pixels of size $8\times 8$  $cm^2$, being 10268 and 3319 regions annotated as containing and not containing coconut trees, respectively.
 
-selected aerial images from WeRobotics and used the same dataset of regions of interest in these images, as provided by\cite{8899005} . The imagery with a resolution of 8cm was captured by the World Bank's UAVs for Disaster Resilience Program, collaborating with WeRobotics and OpenAerialMap in the Kingdom of Tonga in October 2017. The Humanitarian OpenStreetMap community provided the annotation. The dataset consists of 13587 patches of dimensions $90 \times 90$ of coconut (10268) and non-coconut (3319). The latter class has a large variability. The problem of interest is to classify the images in one of the two classes. We only report experiments with one dataset due to the space limitation.
+In order to assess the impact of FLIM in reducing the need for annotated samples, we randomly select 100 regions from each class for training and left the remaining 11387 regions for testing. We have also repeated this procedure three times in order to compute mean and standard deviation of the results in precision, recall, and f-score. By vectorizing and projecting on 2D~\cite{maaten2008visualizing} the 200 training images of each split, the user identified cohesive groups of images from each class and selected two representative images from each class to draw markers. We have neither evaluated markers from a higher number of images nor multiple network architectures trained by FLIM. We just projected the simplest network with a single convolutional layer with weights obtained by FLIM from markers drawn in four images only. 
+
+several architectures based on FLIM and
+
+analyzing the 2D t-SNE projection of the 200 training images, , the user selected 
+
+For comparative analysis, we select the popular VGG-16~\cite{simonyan2014very} since it is a deep neural network that usually requires a much higher number  of annotated samples than 200 to be trained from the scratch. It is also a very competitive CNN when pretrained in the ImageNet dataset. Therefore, as baselines, we use three solutions based on VGG-16: (1) VGG is a network trained from the scratch, using the Xavier's weight-initialization approach, (2) VGG-FT is the network pretrained in the ImageNet dataset and fine-tuned in the coconut-tree training set, and (3) VGG-FE is the feature extractor obtained at the output of the last convolutional layer (layer 13th) of VGG-16 pretrained in the ImageNet dataset. VGG and VGG-FT use a MLP classifier as part of the network and we use the linear SVM-OVO classifier from sklearn~\cite{fan2008liblinear} with $C=0.01$ for VGG-FE.  
+
+In order to evaluate the quality of our feature learning approach, we first compare the features produced by a single-layer network trained by FLIM with those of the last convolutional layer (layer 13th) of the VGG-16, pretrained on the ImageNet dataset. For this comparison, we use  (VGG-FE). Table~\ref{tab:results} shows the result of this comparison on the first two rows. 
+
+We compare different solutions based on FLIM and In order to evaluate FLIM metho, we select VGG-16 as a baseline CNN. VGG-16
 
 As in reality, labeling images is a costly and time-consuming process, and then we assume that we only knew the correct labels of a small set of samples (one hundred images for each class, totaling two hundred images). That way, we would have only those two hundred images to train any models that we would use to try to solve the problem.
 
