@@ -60,6 +60,7 @@
 \usepackage{siunitx}
 \usepackage{pgf,tikz,pgfplots}
 \usetikzlibrary{calc}
+\usepackage{hyperref}
 
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
@@ -246,28 +247,28 @@ Table~\ref{tab:results} shows the results of three FLIM-based solutions using th
 
 
 
-\begin{figure*}
+\begin{figure}
   \centering
-  \subfloat{\includegraphics[width=.13\linewidth]{figures/qualitative/ours/upper-coco-108.png}
+  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/ours/upper-coco-108.png}
   }
   ~
-  \subfloat{\includegraphics[width=.13\linewidth]{figures/qualitative/ours/upper-coco-2473.png}
+  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/ours/upper-coco-2473.png}
   }
   ~
-  \subfloat{\includegraphics[width=.13\linewidth]{figures/qualitative/ours/upper-non_coco-506.png}
+  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/ours/upper-non_coco-506.png}
+  }
+  \\
+  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/vgg/lower-coco-1098.png}
   }
   ~
-  \subfloat{\includegraphics[width=.13\linewidth]{figures/qualitative/vgg/lower-coco-1098.png}
+  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/vgg/lower-coco-2400.png}
   }
   ~
-  \subfloat{\includegraphics[width=.13\linewidth]{figures/qualitative/vgg/lower-coco-2400.png}
-  }
-  ~
-  \subfloat{\includegraphics[width=.13\linewidth]{figures/qualitative/vgg/lower-non_coco-105.png}
+  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/vgg/lower-non_coco-105.png}
   }
   \caption{Misclassified images. The first row has images misclassified by the network trained by our method, and the second row has images misclassified by VGG-16. The two first images of a row have coconut trees.}
   \label{fig:ex-classification}
-\end{figure*}
+\end{figure}
 
  In Figure \ref{fig:ex-classification}, we can see examples of misclassified images. In these images, coconut trees appear in different angles, sizes, and shapes, or the boundaries between the coconut tree and the background are tenuous, making it more difficult to identify them. In turn, images that do not contain coconut trees, contain trees that resemble their shape. The network designer could put markers in those images in other to improve the feature extractor.
 
