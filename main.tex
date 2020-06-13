@@ -112,7 +112,7 @@ Identifying species of trees in aerial images is essential for land-use classifi
 \end{abstract}
 
 \section{Introduction}
-Deep learning has proven to be applicable to different tasks, from image classification to data synthesis \cite{goodfellow2016deep}. In remote sensing, the applications may involve segmentation of terrain images \cite{kemker2018algorithms, kampffmeyer2016semantic, hamaguchi2018effective}, building identification \cite{xu2018building, lu2018detecting, liu2018multilevel}, and deforestation monitoring \cite{bragilevsky2017deep}, for instance. In this work, we are interested in identifying species of trees from aerial images. The topic is important for land-use classification, plantation monitoring, and damage assessment of natural disasters. As the plantations can span vast areas, the manual identification of each tree is costly, tedious, and error-prone, and so automatic classification methods are necessary. 
+Deep learning has proven to be applicable to different tasks, from image classification to data synthesis \cite{goodfellow2016deep}. In remote sensing, the applications may involve segmentation of terrain images \cite{kemker2018algorithms, kampffmeyer2016semantic}, building identification \cite{xu2018building, lu2018detecting, liu2018multilevel}, and deforestation monitoring \cite{bragilevsky2017deep}, for instance. In this work, we are interested in identifying species of trees from aerial images. The topic is important for land-use classification, plantation monitoring, and damage assessment of natural disasters. As the plantations can span vast areas, the manual identification of each tree is costly, tedious, and error-prone, and so automatic classification methods are necessary. 
 
 Classification of tree species in aerial images has been actively investigated~\cite{fassnacht2016review}. In \cite{puttemans2018comparing} and~\cite{aparna2018cnn}, the authors present automatic solutions to detect coconut trees based on convolutional neural network (CNN) models. Despite these recent advances, CNN models usually require considerable human effort in image annotation to create large training sets. Vargas-Muñoz et al.~\cite{8899005} propose an active learning approach to mitigate the problem. The method explores data projection techniques to allow simultaneous annotation of multiple patches as having or not coconut trees. It then uses a CNN to identify the candidate patches with coconut trees. We adopt another alternative -- the design of simplified CNN models from small training sets with user interaction, being the user an expert in the design of CNN models. 
 
@@ -151,24 +151,24 @@ A clustering operation on each set ${\cal P}_i$, $i\in [1,c]$, guarantees groups
 
 Each convolutional layer is trained individually, one layer at a time, to find its filter set ${\cal F}$. The number of filters per layer depends on the clustering technique. We use $K$-means, and then the user must specify the number $K=|{\cal F}|$ of filters. After the convolution operation, we apply the ReLU function to eliminate negative activations and the max-pooling operation to aggregate local information. Note that, apart from the initial marker selection, the training process is automatic. We have preserved the convolutional layers' output dimensions and the marker pixels so we can find the filters of layer $L+1$ from the output of layer $L$. Figure~\ref{fig:arch} shows one example of a simple network projected by FLIM for the experiments of the next section. 
 
-\begin{figure}
+\begin{figure*}
   \begin{center}
   \tikzset{
     treenode/.style = {shape=rectangle, rounded corners,
-                       draw=black, align=center, line width=width},
+                       draw=black, align=center, line width=width, minimum width=2cm},
     specialedge/.style = {line width=1.5pt}
   }
 
   \begin{tikzpicture}
     [
-      grow                    = down,
+      grow                    = right,
       sibling distance        = 5em,
-      level distance          = 8mm,
+      level distance          = 30mm,
       edge from parent/.style = {draw=black, -latex},
       every node/.style       = {treenode},
       sloped
     ]
-    \node [treenode, fill=tealDeer] (v0) {MarkerBased BatchNorm}
+    \node [treenode, fill=tealDeer] {MarkerBased \\ BatchNorm}
     child {
         node [treenode, fill=tealDeer] {Conv$(60 \times 7 \times 7)$}
         child {
@@ -190,7 +190,7 @@ Each convolutional layer is trained individually, one layer at a time, to find i
   \end{center}
   \caption{Example of a network with a single convolutional layer followed by a classifier, as projected by FLIM and used for the experiments in this work.}
   \label{fig:arch}
-\end{figure}
+\end{figure*}
 
 \section{Experiments}
 
@@ -207,16 +207,16 @@ Table~\ref{tab:results} shows the results of three FLIM-based solutions using th
 
 \begin{figure}[!t]
     \centering
-    \subfloat[\label{fig:markers1}]{\includegraphics[width=.3\linewidth]{figures/markers1}
+    \subfloat[\label{fig:markers1}]{\includegraphics[width=.25\linewidth]{figures/markers1}
     }
     ~
-    \subfloat[\label{fig:markers2}]{\includegraphics[width=.3\linewidth]{figures/markers2}
+    \subfloat[\label{fig:markers2}]{\includegraphics[width=.25\linewidth]{figures/markers2}
     }
     \\
-    \subfloat[\label{fig:markers3}]{\includegraphics[width=.3\linewidth]{figures/markers3}
+    \subfloat[\label{fig:markers3}]{\includegraphics[width=.25\linewidth]{figures/markers3}
     }
     ~
-    \subfloat[\label{fig:markers4}]{\includegraphics[width=.3\linewidth]{figures/markers4}
+    \subfloat[\label{fig:markers4}]{\includegraphics[width=.25\linewidth]{figures/markers4}
     }
     \caption{Markers used for training in image regions with (first column) and without (second column) a coconut tree.}
     \label{fig:markers}
@@ -249,22 +249,22 @@ Table~\ref{tab:results} shows the results of three FLIM-based solutions using th
 
 \begin{figure}
   \centering
-  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/ours/upper-coco-108.png}
+  \subfloat{\includegraphics[width=.2\linewidth]{figures/qualitative/ours/upper-coco-108.png}
   }
   ~
-  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/ours/upper-coco-2473.png}
+  \subfloat{\includegraphics[width=.2\linewidth]{figures/qualitative/ours/upper-coco-2473.png}
   }
   ~
-  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/ours/upper-non_coco-506.png}
+  \subfloat{\includegraphics[width=.2\linewidth]{figures/qualitative/ours/upper-non_coco-506.png}
   }
   \\
-  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/vgg/lower-coco-1098.png}
+  \subfloat{\includegraphics[width=.2\linewidth]{figures/qualitative/vgg/lower-coco-1098.png}
   }
   ~
-  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/vgg/lower-coco-2400.png}
+  \subfloat{\includegraphics[width=.2\linewidth]{figures/qualitative/vgg/lower-coco-2400.png}
   }
   ~
-  \subfloat{\includegraphics[width=.3\linewidth]{figures/qualitative/vgg/lower-non_coco-105.png}
+  \subfloat{\includegraphics[width=.2\linewidth]{figures/qualitative/vgg/lower-non_coco-105.png}
   }
   \caption{Misclassified images. The first row has images misclassified by the network trained by our method, and the second row has images misclassified by VGG-16. The two first images of a row have coconut trees.}
   \label{fig:ex-classification}
