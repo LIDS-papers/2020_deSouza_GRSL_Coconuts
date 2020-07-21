@@ -40,7 +40,7 @@
 %% ** renaming them and changing author support contact information. **
 %%*************************************************************************
 
-\documentclass[journal, twoside, peerreview, draftclsnofoot]{IEEEtran}
+\documentclass[journal, twoside]{IEEEtran}
 
 \def\citepunt{,}
 
@@ -119,7 +119,7 @@ Design of convolutional neural networks, remote sensing image analysis, interact
 \end{IEEEkeywords}
 
 \section{Introduction}
-\IEEEPARstart{D}{epp} learning has proven to be applicable to different tasks, from image classification to data synthesis \cite{goodfellow2016deep}. In remote sensing, the applications may involve segmentation of terrain images \cite{kemker2018algorithms, kampffmeyer2016semantic}, building identification \cite{xu2018building, lu2018detecting, liu2018multilevel}, and deforestation monitoring \cite{bragilevsky2017deep}, for instance. In this work, we are interested in identifying species of trees from aerial images. The topic is important for land-use classification, plantation monitoring, and damage assessment of natural disasters. As the plantations can span vast areas, the manual identification of each tree is costly, tedious, and error-prone, and so automatic classification methods are necessary. 
+\IEEEPARstart{D}{eep} learning has proven to be applicable to different tasks, from image classification to data synthesis \cite{goodfellow2016deep}. In remote sensing, the applications may involve segmentation of terrain images \cite{kemker2018algorithms, kampffmeyer2016semantic}, building identification \cite{xu2018building, lu2018detecting, liu2018multilevel}, and deforestation monitoring \cite{bragilevsky2017deep}, for instance. In this work, we are interested in identifying species of trees from aerial images. The topic is important for land-use classification, plantation monitoring, and damage assessment of natural disasters. As the plantations can span vast areas, the manual identification of each tree is costly, tedious, and error-prone, and so automatic classification methods are necessary. 
 
 Classification of tree species in aerial images has been actively investigated~\cite{fassnacht2016review}. In \cite{puttemans2018comparing} and~\cite{aparna2018cnn}, the authors present automatic solutions to detect coconut trees based on convolutional neural network (CNN) models. Despite these recent advances, CNN models usually require considerable human effort in image annotation to create large training sets. Vargas-Muñoz et al.~\cite{8899005} propose an active learning approach to mitigate the problem. The method explores data projection techniques to allow simultaneous annotation of multiple regions as having or not coconut trees. It then uses a CNN to identify the candidate regions with coconut trees. We adopt another alternative -- the design of simplified CNN models from small training sets with user interaction, being the user knowledgeable about CNN modeling and the application domain.
 
@@ -290,7 +290,25 @@ Table~\ref{tab:results} shows the results of three FLIM-based solutions using th
   \caption{Projections by t-SNE of the test images at (a) the input layer, (b) the output of the convolutional layer of  ``FLIM + MLP'' after batch normalization (Figure~\ref{fig:arch}), and (c) the output of the last hidden layer of the MLP classifier in  ``FLIM + MLP''.}
 \end{figure}
 
-As motivated by Rauber et al. \cite{rauber2016visualizing}, we created projections of three stages of the network ``FLIM + MLP" using t-SNE \cite{maaten2008visualizing} to understand how our CNN transforms image spaces along its layers. In Figure \ref{fig:vis-input}, we can see the projection of the test images in the LAB color space. Green points are images that contain coconut trees, and red points are images that do not contain coconut trees. The projection shows considerable overlapping between the two classes. The samples of both classes are also dispersed in the projection. In Figure \ref{fig:vis-feature-extractor}, the projection of the output of our feature extractor shows some reduction in sample dispersion. The classes show more concentration in some parts of the projection and reduced overlapping between them. Finally, Figure \ref{fig:vis-classifier} shows the output of the last hidden layer of the MLP classifier in ``FLIM + MLP''. The overlapping between classes and sample dispersion are considerably reduced, explaining our results. 
+As motivated by Rauber et al. \cite{rauber2016visualizing}, we created projections of three stages of the network ``FLIM + MLP" using t-SNE \cite{maaten2008visualizing} to understand how our CNN transforms image spaces along its layers. In Figure \ref{fig:vis-input}, we can see the projection of the test images in the LAB color space. Green points are images that contain coconut trees, and red points are images that do not contain coconut trees. The projection shows considerable overlapping between the two classes. The samples of both classes are also dispersed in the projection. In Figure \ref{fig:vis-feature-extractor}, the projection of the output of our feature extractor shows some reduction in sample dispersion. The classes show more concentration in some parts of the projection and reduced overlapping between them. Finally, Figure \ref{fig:vis-classifier} shows the output of the last hidden layer of the MLP classifier in ``FLIM + MLP''. The overlapping between classes and sample dispersion are considerably reduced, explaining our results.
+
+
+\begin{table}[!t]
+  \begin{center}
+  \begin{tabular}{|l|c|c|c|}
+  \hline
+   Method & Precision & Recall & F-score \\
+  \hline\hline
+    FLIM+MLP & $0.894 \pm 0.006$ & $0.888 \pm 0.009$ & $0.890 \pm 0.008$\\
+    FLIM-FT+MLP & $0.888 \pm 0.001$ & $0.878\pm 0.001$ & $0.881 \pm 0.001$ \\
+    VGG-FT & $0.884 \pm 0.003$ & $0.877 \pm 0.006$ & $0.879 \pm 0.005 $ \\
+  \hline
+  \end{tabular}
+  \end{center}
+
+\caption{Mean and standard deviation of precision, recall, and f-score for each method: a feature extractor with a classifier with a larger train set.}
+  \label{tab:results-with-1200-images}
+\end{table}
 
 \section{Conclusion}
 
