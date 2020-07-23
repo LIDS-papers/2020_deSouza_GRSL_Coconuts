@@ -1,0 +1,110 @@
+%Fiquemos com Deus e Nossa Senhora!
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{a4paper,left=20mm,right=20mm,top=35mm,bottom=35mm}
+
+
+\usepackage[pdftex]{graphicx}
+\usepackage[cmex10]{amsmath}
+\interdisplaylinepenalty=2500
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{color}
+\usepackage{multicol}
+\usepackage{mathtools}
+
+\newtheorem{theo}{Theorem}
+\newtheorem{defi}{Definition}%[section]
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}{Lemma}
+\usepackage{url}
+\setcounter{secnumdepth}{5}
+
+\newcommand{\rwr}[1]{\par \medskip \noindent {\bf Reviewer #1: }}
+\newcommand{\ans}{\smallskip\begin{quote}  \noindent }
+\newcommand{\eans}{\end{quote}}
+
+\newcommand{\edit}{\par \medskip\noindent {\bf Editor: }}
+
+\title{Learning CNN filters from user-drawn image markers for coconut-tree image classification}
+
+\author{Italos Estilon de Souza and Alexandre Xavier Falc\~{a}o}
+
+\date{Manuscript GRSL-00821-2020}
+
+\begin{document}
+\maketitle
+
+Dear Editor, please find in attach the revised version of our
+manuscript GRSL-00821-2020. We would like to thank you and the
+reviewers for the opportunity and comments to improve the
+presentation of this work.
+
+We have addressed all raised issues, highlighted in the text in red, and explained as follows. 
+
+\rwr{1} 
+The manuscript entitled "Learning CNN ﬁlters from user-drawn image-makers for coconut-tree image classiﬁcation" presents a method that needs a minimal set of user-selected images to train the CNN’s feature extractor, reducing the number of required images to train the fully connected layers. The theme of this manuscript is interesting, and the text brings an important contribution to the remote sensing area using deep learning tools. However, to be considered adequated to publish in the journal "Geoscience and Remote Sensing Letters", it requires a revision on the text. The attached document presents all corrections and observations made for it. However, the inclusion of more experiments using more images to train the proposed model is a crucial issue in my point of view. This is important to prove the robustness of the proposed model.
+
+
+\rwr{1} A well-trained CNN model should detect image regions that best discriminate classes as positive activations, improve class separation by eliminating negative activations, and aggregate the resulting activations locally (pooling) and globally (flattening) into a highly dimensional and sparse feature space, in which a linear classifier should separate the classes with reasonable success.
+
+\ans   \eans
+
+\rwr{1} with resolution under 10 $cm^2$; LAB color space; 11387 regions; MLP classifier; 
+
+\ans CIE L*a*b* color space \eans
+
+\rwr{1} We repeated this procedure three times to compute the mean and the standard deviation of the results in precision, recall, and f-score. 
+
+\ans \eans
+
+\rwr{1} we identified cohesive groups of images from each class and selected two representative images from each class to draw markers.}  
+
+\ans \eans
+
+\rwr{1} We have not investigated the impact of placing markers on a higher number of images and network architecture optimization procedures yet.
+
+\ans \eans
+
+\rwr{1} We use Pytorch to implement our feature extractor and the MLP classifier.
+
+\ans \eans
+
+\rwr{1} Caption of the previous Fig. 3 (Fig. 4 now): Markers used for training in image regions with (first column) and without (second column) a coconut tree.
+
+\ans \eans
+
+\rwr{1}{By comparing ``FLIM+MLP'' with VGG, one can observe that FLIM reduces the number of required training images. Finally, the comparison between ``FLIM+MLP'' and VGG-FT demonstrates that FLIM can provide competitive results using a considerably more simplified architecture than  VGG-FT.}
+
+\ans \eans
+
+\rwr{2} This paper presents a new feature learning approach that can be used to reduce the number of required images to train a deep neural network. It introduces a novel way to estimate filter weights for the convolutional layers using user-drawn markers in a few training images. The need for a large number of labeled input samples is a very well known and important problem for many CNN models and the proposed solution seems to be promising but the paper has some presentation and methodological problems that must be addressed.
+
+\ans \eans
+
+
+\rwr{2} Pg. 5 - Line 6: An error in the paper title is something that should be avoided at all costs as it is very confusing for the reader.  "...User-drawn Image MAKERS..." ??? The first word of the introduction is also wrong: "DePP learning"? Overall, there are not many language errors, but a proof-reading is highly recommended
+
+\ans \eans
+
+\rwr{2} Pg. 9 - Lines 14-18: Justify the choice of all hyperparameters (E.g. epochs, batch size, learning rate, etc). Have any previous experiments been made to tune these hyperparameters? Has the same dataset been used?
+
+\ans \eans
+
+\rwr{2} Pg. 10 - Table 1: The F-score difference from FLIM+MLP (0.854) and VGG+FT (0.851) is statistically significant considering the standard deviation?  Has a statistical hypothesis test been applied?
+
+\ans \eans
+
+\rwr{2} Pg. 11 - It would be worth investigating or discussing if the time taken to mark some images is always less than the time take to produce more labeled images (E.g.: how many new labeled images would take for VGG+FT beat FLIMP+MLP?). Is there a trade-off?
+
+\ans \eans
+
+\rwr{2} Pg. 12 - It seems that the literature review outdated (only one 2019/2020 work and from the same authors).
+
+\ans
+
+\eans
+
+\end{document}
+
