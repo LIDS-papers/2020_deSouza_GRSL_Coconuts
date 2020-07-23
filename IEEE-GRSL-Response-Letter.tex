@@ -36,24 +36,27 @@
 \begin{document}
 \maketitle
 
-Dear Editor, please find in attach the revised version of our
-manuscript GRSL-00821-2020. We would like to thank you and the
-reviewers for the opportunity and comments to improve the
-presentation of this work.
-
-We have addressed all raised issues, highlighted in the text in red, and explained as follows. 
+Dear Editor, please find attached the revised version of our manuscript, GRSL-00821-2020. We thank the Editor and
+reviewers for the opportunity and comments to improve the presentation of our work. We have addressed all raised issues and highlighted the changes in red. Our point-by-point response to the reviewers' comments follows next. 
 
 \rwr{1} 
 The manuscript entitled "Learning CNN ﬁlters from user-drawn image-makers for coconut-tree image classiﬁcation" presents a method that needs a minimal set of user-selected images to train the CNN’s feature extractor, reducing the number of required images to train the fully connected layers. The theme of this manuscript is interesting, and the text brings an important contribution to the remote sensing area using deep learning tools. However, to be considered adequated to publish in the journal "Geoscience and Remote Sensing Letters", it requires a revision on the text. The attached document presents all corrections and observations made for it. However, the inclusion of more experiments using more images to train the proposed model is a crucial issue in my point of view. This is important to prove the robustness of the proposed model.
 
+\ans 
+
+Thanks for the comments. We have included more experiments to demonstrate the robustness of the proposed feature learning approach. The parts marked and commented by reviewer 1 in the manuscript are reproduced and addressed as follows.
+
+\eans
+
 
 \rwr{1} A well-trained CNN model should detect image regions that best discriminate classes as positive activations, improve class separation by eliminating negative activations, and aggregate the resulting activations locally (pooling) and globally (flattening) into a highly dimensional and sparse feature space, in which a linear classifier should separate the classes with reasonable success.
 
-\ans   \eans
+\ans  Thanks. The sentence was long and unclear. We have simplified it and improved it in first paragraph of Section II.
+\eans
 
 \rwr{1} with resolution under 10 $cm^2$; LAB color space; 11387 regions; MLP classifier; 
 
-\ans CIE L*a*b* color space \eans
+\ans Thanks. These are minor corrections in different parts of the text that have been solved now. (Section III). \eans
 
 \rwr{1} We repeated this procedure three times to compute the mean and the standard deviation of the results in precision, recall, and f-score. 
 
