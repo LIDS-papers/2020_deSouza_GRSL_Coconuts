@@ -302,7 +302,7 @@ Each convolutional layer is trained individually, one layer at a time, to find i
      \node (img2) [image, below left=-5em of img1] {\includegraphics[width=.08\textwidth]{figures/qualitative/ours/lower-coco-789.png}};
      \node (img3) [image, below left=-5em of img2] {\includegraphics[width=.08\textwidth]{figures/qualitative/ours/lower-coco-789.png}};
 
-     \node (imgs) [fit={($(img1.north west)+(-0.45,0.1)$) ($(img3.south east)+(0.45,-0.1)$)}, inner sep=0pt, draw=none, rounded corners, very thick, label = {[label distance = 0.1em]below:{Training set}}] {};
+     \node (imgs) [fit={($(img1.north west)+(-0.45,0.1)$) ($(img3.south east)+(0.45,-0.1)$)}, inner sep=0pt, draw=none, rounded corners, very thick, label = {[label distance = 0.1em]below:{Testing set}}] {};
      %----------------------------------
 
      \node (aft) [steps, right=2em of imgs] {Feature\\Extraction};
@@ -316,7 +316,7 @@ Each convolutional layer is trained individually, one layer at a time, to find i
     \node (features) [fit={($(f1.north west)+(-0.3,0.2)$) ($(f4.south east)+(0.3,-0.2)$)}, draw=none, inner sep=0pt, label = {[label distance = 0.1em]below:{Features}}] {};
     %----------------------------------
 
-     \node (sup) [steps, right=2em of features] {Supervised\\Learning};
+     \node (sup) [steps, right=2em of features] {Classification};
 
      \node (clf) [steps, right=2em of sup, fill=none, draw=none] {Classifier};
 
@@ -341,9 +341,9 @@ We use a dataset from~\cite{8899005}, which contains regions of aerial images wi
 The experiments have been designed to evaluate the following hypotheses about FLIM.
 \begin{enumerate}
  \item[(H1)]  FLIM can produce competitive image feature extractors from user-drawn markers in a few images selected per class from a training set. 
-\item[(H2)]  For a given network architecture, FLIM can provide better classification results than those obtained by training that network with backpropagation.
+\item[(H2)]  For a given network architecture, FLIM can provide better classification results than those obtained by training the same architecture with backpropagation.
 \item[(H3)] Its feature extractor remains competitive independently of the training set size. 
-\item[(H4)] User-drawn markers on a higher number of selected images from the training set can improve image feature extraction.
+\item[(H4)] User-drawn markers on a higher number of selected images from the training set can improve feature extraction.
 \end{enumerate}
 }
 
