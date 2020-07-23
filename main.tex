@@ -64,6 +64,8 @@
 \usetikzlibrary{positioning}
 \usetikzlibrary{backgrounds}
 
+\usepackage{pgfplots,filecontents}
+
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
@@ -97,6 +99,7 @@
 \definecolor{violet}{RGB}{112,5,164}
 \definecolor{navyPurple}{RGB}{172,86,253}
 \definecolor{heliotrope}{RGB}{236,93,253}
+\definecolor{pink}{RGB}{250,38,160}
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -380,8 +383,8 @@ Table~\ref{tab:results} shows the results of three FLIM-based solutions using th
 
 As motivated by Rauber et al. \cite{rauber2016visualizing}, we created projections of three stages of the network ``FLIM + MLP" using t-SNE \cite{maaten2008visualizing} to understand how our CNN transforms image spaces along its layers. In Figure \ref{fig:vis-input}, we can see the projection of the test images in the LAB color space. Green points are images that contain coconut trees, and red points are images that do not contain coconut trees. The projection shows considerable overlapping between the two classes. The samples of both classes are also dispersed in the projection. In Figure \ref{fig:vis-feature-extractor}, the projection of the output of our feature extractor shows some reduction in sample dispersion. The classes show more concentration in some parts of the projection and reduced overlapping between them. Finally, Figure \ref{fig:vis-classifier} shows the output of the last hidden layer of the MLP classifier in ``FLIM + MLP''. The overlapping between classes and sample dispersion are considerably reduced, explaining our results.
 
-
-\begin{table}[!t]
+\begin{comment}
+  \begin{table}[!t]
   \begin{center}
   \begin{tabular}{|l|c|c|c|}
   \hline
@@ -393,10 +396,44 @@ As motivated by Rauber et al. \cite{rauber2016visualizing}, we created projectio
   \hline
   \end{tabular}
   \end{center}
+  \caption{Mean and standard deviation of precision, recall, and f-score for each method: a feature extractor with a classifier with a larger train set.}
+    \label{tab:results-with-1200-images}
+  \end{table}
+\end{comment}
 
-\caption{Mean and standard deviation of precision, recall, and f-score for each method: a feature extractor with a classifier with a larger train set.}
-  \label{tab:results-with-1200-images}
-\end{table}
+
+
+\begin{figure}
+\begin{tikzpicture}
+  \begin{axis}[
+    /pgf/number format/set thousands separator = {},
+    xlabel = Train set size,
+    ylabel = f-score,
+    xmin=300, xmax=1200,
+    grid=major,
+    grid style=dashed,
+    xtick={300,450, 600, 750, 900, 1050, 1200},
+    legend style={nodes={scale=0.65, transform shape}},
+    legend pos=south east
+    ]
+    \addplot table[x index=0,y index=1,header=false] {data/data.dat};
+    \addlegendentry{FLIM+MLP}
+
+    \addplot  table[x index=0,y index=2,header=false] {data/data.dat};
+    \addlegendentry{FLIM-FT+MLP}
+
+    \addplot  table[x index=0,y index=3,header=false] {data/data.dat};
+    \addlegendentry{VGG-FT}
+
+    \addplot table[x index=0,y index=4,header=false] {data/data.dat};
+    \addlegendentry{CL+MLP}
+
+    \legend{FLIM+MLP,FLIM-FT+MLP,VGG-FT,CL+MLP}
+  
+  \end{axis}
+\end{tikzpicture}
+\caption{Graph showing the impact of training set size on quantitative results. FLIM+MLP feature extractor was trained only with four images, and the remaining training set was used to train the MLP classifier.}
+\end{figure}
 
 \section{Conclusion}
 
