@@ -256,7 +256,7 @@ Each convolutional layer is trained individually, one layer at a time, to find i
 
     \node (flim) [steps, right=1em of mimgs] {FLIM};
 
-    \node (ft) [steps, below=5em of flim] {Feature\\Extractor};
+    \node (ft) [steps, below=5em of flim, fill=white, draw=none] {Feature\\Extractor};
 
 
     \node (user) [image, below=2em of simgs, outer sep = -.5em] {\includegraphics[width=.07\textwidth]{figures/user.png}};
@@ -305,7 +305,7 @@ Each convolutional layer is trained individually, one layer at a time, to find i
      \node (imgs) [fit={($(img1.north west)+(-0.45,0.1)$) ($(img3.south east)+(0.45,-0.1)$)}, inner sep=0pt, draw=none, rounded corners, very thick, label = {[label distance = 0.1em]below:{Training set}}] {};
      %----------------------------------
 
-     \node (aft) [steps, right=2em of imgs] {Apply Featute\\Extractor};
+     \node (aft) [steps, right=2em of imgs] {Feature\\Extraction};
 
       %images----------------------------
     \node (f1) [image, above right=-3em and 3em of aft] {\includegraphics[width=.08\textwidth]{figures/features/f1.png}};
@@ -318,7 +318,7 @@ Each convolutional layer is trained individually, one layer at a time, to find i
 
      \node (sup) [steps, right=2em of features] {Supervised\\Learning};
 
-     \node (clf) [steps, right=2em of sup] {Classifier};
+     \node (clf) [steps, right=2em of sup, fill=none, draw=none] {Classifier};
 
      %--------------------------------------------------------------arrows
     
