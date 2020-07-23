@@ -337,8 +337,15 @@ Each convolutional layer is trained individually, one layer at a time, to find i
 
 We use a dataset from~\cite{8899005}, which contains regions of aerial images with and without coconut trees from the Kingdom of Tonga, as acquired in October 2017~\footnote{The images are available in \url{blog.werobotics.org/2018/01/11/open-ai-challenge-2}.}. Each region is classified as containing one or none coconut tree, but part of coconut trees from adjacent regions might appear near the region's border. The Humanitarian OpenStreetMap community annotated the regions. The dataset consists of 13587 regions with $90 \times 90$ pixels \textcolor{red}{with spatial resolution of $8$\si{\centi\metre}}, being 10268 and 3319 regions annotated as containing and not containing coconut trees, respectively. \textcolor{red}{The region images contain three channels: red, green, and blue. We convert them to the CIE L*a*b* color space and normalize each channel within $[0,1]$}.
 
-
-
+\textcolor{red}{
+The experiments have been designed to evaluate the following hypotheses about FLIM.
+\begin{enumerate}
+ \item[(H1)]  FLIM can produce competitive image feature extractors from user-drawn markers in a few images selected per class from a training set. 
+\item[(H2)]  For a given network architecture, FLIM can provide better classification results than those obtained by training that network with backpropagation.
+\item[(H3)] Its feature extractor remains competitive independently of the training set size. 
+\item[(H4)] User-drawn markers on a higher number of selected images from the training set can improve image feature extraction.
+\end{enumerate}
+}
 
 
 To assess the impact of FLIM in reducing the need for annotated samples, we
