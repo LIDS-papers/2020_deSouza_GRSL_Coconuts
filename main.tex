@@ -337,23 +337,6 @@ Each convolutional layer is trained individually, one layer at a time, to find i
 
 We use a dataset from~\cite{8899005}, which contains regions of aerial images with and without coconut trees from the Kingdom of Tonga, as acquired in October 2017~\footnote{The images are available in \url{blog.werobotics.org/2018/01/11/open-ai-challenge-2}.}. Each region is classified as containing one or none coconut tree, but part of coconut trees from adjacent regions might appear near the region's border. The Humanitarian OpenStreetMap community annotated the regions. The dataset consists of 13587 regions with $90 \times 90$ pixels \textcolor{red}{with spatial resolution of $8$\si{\centi\metre}}, being 10268 and 3319 regions annotated as containing and not containing coconut trees, respectively. \textcolor{red}{The region images contain three channels: red, green, and blue. We convert them to the CIE L*a*b* color space and normalize each channel within $[0,1]$}.
 
-\textcolor{red}{The experiments have been designed to demonstrate the following hinvolved a dataset with X coconut-tree images from two classes, coconut-tree (Y images) and non-coconut-tree (Z images). All experiments were repeated T times, using random splits into training and testing sets, for statistical analysis with p-value 0.05 in Wilcoxon signed-rank test. The results were found statistically significant. The experiments have been designed to assess the following hypothesis about FLIM:
-
-It is possible to learn competitive image feature extractors from user-drawn markers in a few training images per class. 
-
-We selected only 4 images from a training set with 100 images per class for the user to draw markers. An image feature extractor was trained by FLIM and the training set was used to design SVM and MLP classifiers for comparison with a well-established CNN, VGG-16. VGG was trained from scratch and also pre-trained on the ImageNet dataset and fine-tuned on the 200 training images. The classification results on the test set with the remaining W images indicate that the image feature extractor produced by FLIM can provide higher f-score than the feature extractor of VGG, with and without fine-tuning, and for both classifiers, SVM and MLP. These results are shown in Table I when we compare FLIM+SVM x VGG-FE+SVM, FLIM+MLP x VGG, and FLIM+MLP x VGG-FT. 
-
-For a given network architecture, the image features obtained by FLIM can produce similar or better classification results than those obtained by backpropagation on a same network architecture.
-
-The comparison in Table I between FLIM+MLP and FLIM-FT+MLP shows that fine-tuning cannot improve the results already obtained by FLIM+MLP. Similarly, the comparison between FLIM+MLP x CL+MLP in Table I shows that a network with the same architecture of FLIM+MLP, trained from scratch, cannot surpass its results.  
-
-The competitive classification results obtained by FLIM remain competitive independently of the number of samples used to train the classifier.
-
-We then repeated the comparisons between FLIM+MLP, FLIM-FT+MLP, and VGG-FT, the most competitive approaches, for increasing training-set sizes from 200 to 1200, and FLIM+MLP remained superior. The f-score curves of the methods in Figure X confirms the quality of the image feature extractor obtained by FLIM.  
-
-By increasing the number of relevant images selected to draw markers, one can improve the image feature extractor produced by FLIM. 
-
-            We finally compared FLIM+SVM, for the sake of simplicity, with an increasing number of images for marker selection (x1, x2, x3 images). As shown in Table II for X training images used to train the SVM classifier, this hypothesis is true. It is important to note that the results are promising but the selection of relevant images for marker selection is still a topic that deserves further investigation.  
 
 
 
