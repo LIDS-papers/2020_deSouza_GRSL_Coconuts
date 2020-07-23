@@ -63,6 +63,7 @@
 \usepackage{varwidth}
 \usetikzlibrary{positioning}
 \usetikzlibrary{backgrounds}
+\usetikzlibrary{decorations.pathreplacing}
 
 \usepackage{pgfplots,filecontents}
 
@@ -209,6 +210,83 @@ Each convolutional layer is trained individually, one layer at a time, to find i
 \begin{figure*}
   \begin{center}
     
+    \tikzstyle{steps} = [rectangle, rounded corners, minimum width=1.3cm, minimum height=0.5cm,text centered, draw=pink, thick, fill=heliotrope!30, execute at begin node={\begin{varwidth}{2.5cm}},
+    execute at end node={\end{varwidth}}]
+    \tikzstyle{image} = [minimum width=1.3cm, minimum height=0.7cm,text centered, draw=white,fill=white!30, inner sep=0pt]
+
+    \tikzstyle{myarrow} = [navy, thick]
+
+    \tikzstyle{arrow} = [thick,->,>=stealth]
+
+    \begin{tikzpicture}[node distance=1.5cm]
+      %images----------------------------
+     \node (img1) [image] {\includegraphics[width=.08\textwidth]{figures/qualitative/ours/lower-coco-789.png}};
+     \node (img2) [image, below left=-5em of img1] {\includegraphics[width=.08\textwidth]{figures/qualitative/ours/lower-coco-789.png}};
+     \node (img3) [image, below left=-5em of img2] {\includegraphics[width=.08\textwidth]{figures/qualitative/ours/lower-coco-789.png}};
+
+     \node (imgs) [fit={($(img1.north west)+(-0.45,0.1)$) ($(img3.south east)+(0.45,-0.1)$)}, inner sep=0pt, draw=none, rounded corners, very thick, label = {[label distance = 0.1em]below:{Training set}}] {};
+     %----------------------------------
+
+     \node (tsne) [steps, right=1em of imgs] {t-SNE};
+
+     \node (vis1) [image, right=1.5em of tsne, outer sep=0pt, label = {[label distance = 0.1em]below:{Projection}}] {\includegraphics[width=.12\textwidth]{figures/input_200.png}};
+
+     \node (select) [steps, right=1.35em of vis1] {Select\\ Images};
+    
+    %images----------------------------
+    \node (simg1) [image, above right=-2.5em and 3em of select] {\includegraphics[width=.08\textwidth]{figures/img1.png}};
+    \node (simg2) [image, below left=-5em of simg1] {\includegraphics[width=.08\textwidth]{figures/img2.png}};
+    \node (simg3) [image, below left=-5em of simg2] {\includegraphics[width=.08\textwidth]{figures/img3.png}};
+    \node (simg4) [image, below left=-5em of simg3] {\includegraphics[width=.08\textwidth]{figures/img4.png}};
+
+    \node (simgs) [fit={($(simg1.north west)+(-0.64,0.2)$) ($(simg4.south east)+(0.64,-0.2)$)}, inner sep=0pt, draw=none, label = {[label distance = 0.0em]above:{Selected images}}] {};
+    %----------------------------------
+
+     \node (put) [steps, right=1em of simgs] {Select\\Markers};
+
+     %images----------------------------
+    \node (mimg1) [image, above right=-2em and 2.8em of put] {\includegraphics[width=.08\textwidth]{figures/markers1.png}};
+    \node (mimg2) [image, below left=-5em of mimg1] {\includegraphics[width=.08\textwidth]{figures/markers2.png}};
+    \node (mimg3) [image, below left=-5em of mimg2] {\includegraphics[width=.08\textwidth]{figures/markers3.png}};
+    \node (mimg4) [image, below left=-5em of mimg3] {\includegraphics[width=.08\textwidth]{figures/markers4.png}};
+
+    \node (mimgs) [fit={($(mimg1.north west)+(-0.64,0.2)$) ($(mimg4.south east)+(0.64,-0.2)$)}, inner sep=0pt, draw=none, label = {[label distance = 0.0em]above:{Markers}}] {};
+    
+
+    \node (flim) [steps, right=1em of mimgs] {FLIM};
+
+    \node (ft) [steps, below=5em of flim] {Feature\\Extractor};
+
+
+    \node (user) [image, below=2em of simgs, outer sep = -.5em] {\includegraphics[width=.07\textwidth]{figures/user.png}};
+
+     %--------------------------------------------------------------arrows
+     \draw [arrow, myarrow] (imgs) -- (tsne);
+     \draw [arrow, myarrow] (tsne) -- (vis1);
+     \draw [arrow, myarrow] (vis1) -- (select);
+     \draw [arrow, myarrow] (select) -- (simgs);
+     \draw [arrow, myarrow] (simgs) -- (put);
+     \draw [arrow, myarrow] (put) -- (mimgs);
+     \draw [arrow, myarrow] (mimgs) -- (flim);
+     \draw [arrow, myarrow] (flim) -- (ft);
+     \draw [arrow, myarrow] (user) -- (select);
+     \draw [arrow, myarrow] (user) -- (put);
+
+     %\draw [decorate,decoration={brace,amplitude=10pt,raise=4pt},yshift=0pt]
+%(img3.west) -- (img1.north) node [black,midway,xshift=0.8cm, label = {[label distance = 0.1em]above:{Images}}] {};
+
+    \end{tikzpicture}
+  \end{center}
+  \caption{Pipeline.}
+  \label{fig:pipeline}
+\end{figure*}
+
+\begin{comment}
+  
+
+\begin{figure*}
+  \begin{center}
+    
     \tikzstyle{steps} = [rectangle, rounded corners, minimum width=1.3cm, minimum height=0.7cm,text centered, draw=black,fill=violet!30, execute at begin node={\begin{varwidth}{2.5cm}},
     execute at end node={\end{varwidth}}]
     \tikzstyle{image} = [minimum width=1.3cm, minimum height=0.7cm,text centered, draw=white,fill=white!30, inner sep=0pt]
@@ -288,6 +366,7 @@ Each convolutional layer is trained individually, one layer at a time, to find i
   \caption{Pipeline.}
   \label{fig:pipeline}
 \end{figure*}
+\end{comment}
 
 \section{Experiments}
 
