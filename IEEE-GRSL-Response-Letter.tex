@@ -44,31 +44,33 @@ The manuscript entitled "Learning CNN ﬁlters from user-drawn image-makers for 
 
 \ans 
 
-Thanks for the comments. We have better elaborated the experimental section included more experiments to demonstrate the robustness of the proposed feature learning approach. The parts marked and commented by reviewer 1 in the manuscript are reproduced and addressed as follows.
+Thanks for the comments. We have improved the experimental section with new experiments, demonstrating the robustness of the proposed feature learning approach. We have also revised the text, added a figure, and clarified some parts to improve readability. All changes are in red. 
 
 \eans
 
 
 \rwr{1} A well-trained CNN model should detect image regions that best discriminate classes as positive activations, improve class separation by eliminating negative activations, and aggregate the resulting activations locally (pooling) and globally (flattening) into a highly dimensional and sparse feature space, in which a linear classifier should separate the classes with reasonable success.
 
-\ans  Thanks. The sentence was long and unclear. We have simplified it and improved it in first paragraph of Section II.
+\ans  Thanks. The sentence was long and unclear. We have simplified and improved it in the first paragraph of Section II.
 \eans
 
 \rwr{1} with resolution under 10 $cm^2$; LAB color space; 11387 regions; MLP classifier; 
 
-\ans Thanks. These are minor corrections in different parts of the text that have been solved now. (Section III). \eans
+\ans Thanks. These are minor corrections in different parts of Section III that have been solved now. \eans
 
 \rwr{1} We repeated this procedure three times to compute the mean and the standard deviation of the results in precision, recall, and f-score. 
 
-\ans \eans
+\ans 
+This sentence was removed. The dataset was randomly divided into training, validation, and testing sets. The validation set was used only once to choose empirically the architecture of the CNN through some preliminary tests. The mean results with standard deviation were computed based on those three random splits, using their respective training and testing sets. We hope this is clear in Section III now. 
+\eans
 
 \rwr{1} we identified cohesive groups of images from each class and selected two representative images from each class to draw markers.}  
 
-\ans \eans
+\ans We have changed the way to explain the choice of representative images from each class to draw markers. The new Figure 3 also helps in that explanation. \eans
 
 \rwr{1} We have not investigated the impact of placing markers on a higher number of images and network architecture optimization procedures yet.
 
-\ans \eans
+\ans Thanks a lot for the suggestion related to this sentence. The sentence has been removed and we have added ex\eans
 
 \rwr{1} We use Pytorch to implement our feature extractor and the MLP classifier.
 
