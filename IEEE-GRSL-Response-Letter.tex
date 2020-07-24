@@ -104,19 +104,21 @@ This sentence was removed. The dataset was randomly divided into training, valid
 
 \ans 
 
-For three splits only and 200 training images, it was not possible to claim that this difference is statistically significant. However, they are undoubtedly competitive, being FLIM+MLP a much simpler (lighter) network than VGG-FT. Even with a new experiment in which we increase the training set up to 1200 images, the difference increases in favor of FLIM+MLP, but they are still not statistically significant (except for one case with 1100 images). On the other hand, the f-score curve of FLIM+MLP was consistently above one of VGG-FT. We have improved the experimental section to clarify this and several other issues.  
+For three splits only and 200 training images, it was not possible to claim that this difference is statistically significant. However, they are undoubtedly competitive, being FLIM+MLP a much simpler (lighter) network than VGG-FT.   
 \eans
 
 \rwr{2} Pg. 11 - It would be worth investigating or discussing if the time taken to mark some images is always less than the time take to produce more labeled images (E.g.: how many new labeled images would take for VGG+FT beat FLIMP+MLP?). Is there a trade-off?
 
-\ans Thanks a lot for raising these questions. We noticed that it was not clear that markers are drawn on a few images selected from the training set (we used only four images). The user takes a couple of minutes to select images and draw markers in those images. This is much less than the time taken to examine and label 200 images. We also added an experiment with increasing training set sizes. VGG-FT could never beat FLIM+MLP. The reason is that the image features of FLIM are better than those of VGG-FE (the one extracted from the last convolutional layer of VGG-FT), and both use a similar MLP (the only difference is its input layer). So, higher is the number of training samples, MLP can improve the f-score of both, being the one of FLIM+MLP always above the one o    
+\ans Thanks a lot for raising both questions. We noticed that it was not clear that markers are drawn on a few images selected from the training set (we used only 4 images). The user takes a couple of minutes to select images and draw markers on those images. This time is much less than the time taken to examine and label 200 images. We added a sentence to clarify that in Section I. We also added Figure 3 to explain the user-interaction process in FLIM and modified a few parts in the text to clarify that FLIM is trained from markers in 4 images only.  
+
+We added an experiment with increasing training set sizes. VGG-FT could never beat FLIM+MLP, even with a higher number of training images to improve its features. The reason is that 1200 images were not enough to improve VGG-FE (the feature extractor obtained at the last convolutional layer of VGG-FT). Both FLIM+MLP and VGG-FT use a similar MLP (the only difference is in the input layer due to their different number of features). Therefore, the higher number of training images benefit both approaches, being the mean f-score curve of FLIM+MLP consistently above the one of VGG-FT.
 
 \eans
 
 \rwr{2} Pg. 12 - It seems that the literature review outdated (only one 2019/2020 work and from the same authors).
 
 \ans
-
+Thanks, we have improved the literature review in Section I.
 \eans
 
 \end{document}
