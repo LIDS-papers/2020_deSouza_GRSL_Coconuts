@@ -74,28 +74,30 @@ This sentence was removed. The dataset was randomly divided into training, valid
 
 \rwr{1} We use Pytorch to implement our feature extractor and the MLP classifier.
 
-\ans MLP stands for multi-layer perceptron and it was defined in the first paragraph of Section II. We have redefined it again in Section III. We have also included the specifications of the machine used for the experiments in the beginning of the second paragraph in Section III. \eans
+\ans MLP stands for a multi-layer perceptron, and it was defined in the first paragraph of Section II. We have redefined it again in Section III. We have also added the machine used for the experiments at the beginning of the second paragraph in Section III. \eans
 
 \rwr{1} Caption of the previous Fig. 3 (Fig. 4 now): Markers used for training in image regions with (first column) and without (second column) a coconut tree.
 
-\ans \eans
+\ans Thanks, we have fixed that indicating which marker color is used to indicate each class. 
+\eans
 
 \rwr{1}{By comparing ``FLIM+MLP'' with VGG, one can observe that FLIM reduces the number of required training images. Finally, the comparison between ``FLIM+MLP'' and VGG-FT demonstrates that FLIM can provide competitive results using a considerably more simplified architecture than  VGG-FT.}
 
-\ans \eans
+\ans Thanks, we have removed `` '' around the names of the methods.\eans
 
 \rwr{2} This paper presents a new feature learning approach that can be used to reduce the number of required images to train a deep neural network. It introduces a novel way to estimate filter weights for the convolutional layers using user-drawn markers in a few training images. The need for a large number of labeled input samples is a very well known and important problem for many CNN models and the proposed solution seems to be promising but the paper has some presentation and methodological problems that must be addressed.
 
-\ans \eans
+\ans Thanks for the comments. We have improved the experiments in Section III and the presentation of the work in several parts of the text. 
+\eans
 
 
 \rwr{2} Pg. 5 - Line 6: An error in the paper title is something that should be avoided at all costs as it is very confusing for the reader.  "...User-drawn Image MAKERS..." ??? The first word of the introduction is also wrong: "DePP learning"? Overall, there are not many language errors, but a proof-reading is highly recommended
 
-\ans \eans
+\ans Thanks. We have fixed them and revised the entire text to avoid typos. \eans
 
 \rwr{2} Pg. 9 - Lines 14-18: Justify the choice of all hyperparameters (E.g. epochs, batch size, learning rate, etc). Have any previous experiments been made to tune these hyperparameters? Has the same dataset been used?
 
-\ans \eans
+\ans Thanks to have pointed it out\eans
 
 \rwr{2} Pg. 10 - Table 1: The F-score difference from FLIM+MLP (0.854) and VGG+FT (0.851) is statistically significant considering the standard deviation?  Has a statistical hypothesis test been applied?
 
