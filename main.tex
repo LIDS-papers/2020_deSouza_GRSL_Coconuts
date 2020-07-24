@@ -55,6 +55,7 @@
 \usepackage{amsfonts}
 \usepackage{bm}
 \usepackage{siunitx}
+\usepackage{textcomp}
 \usepackage{hyperref}
 
 \usepackage{tikz}
@@ -278,7 +279,7 @@ Each convolutional layer is trained individually, one layer at a time, to find i
 
     \end{tikzpicture}
   \end{center}
-  \caption{Pipeline for training a feature extractor.}
+  \caption{\textcolor{red}{Pipeline for training a feature extractor. In the projection, green points are images with coconut trees, and red points are images with no coconut trees. Orange markers denote background regions, and cyan markers denote coconut tree regions.}}
   \label{fig:pipeline-xtractor}
 \end{figure*}
 
@@ -339,14 +340,14 @@ Table~\ref{tab:results} shows the mean results of this first experiment for thre
   \hline
    Method & Precision & Recall & F-score \\
   \hline\hline
-    FLIM+SVM & $0.856 \pm 0.011 $ & $ 0.831 \pm 0.019$ & $ 0.838 \pm 0.017$\\ 
-    VGG-FE+SVM & $0.855 \pm 0.001$ & $0.816 \pm 0.007$ & $0.826 \pm 0.006 $ \\\hline
+    FLIM+SVM & 0.856 \textpm 0.011  &  0.831 \textpm 0.019 & 0.838 \textpm 0.017\\ 
+    VGG-FE+SVM & 0.855 \textpm 0.001 & 0.816 \textpm 0.007 & 0.826 \textpm 0.006  \\\hline
       
-    FLIM+MLP & $0.863 \pm 0.002$ & $0.849 \pm 0.005$ & $0.854 \pm 0.004$\\
-    FLIM-FT+MLP & $0.845 \pm 0.003$ & $0.825\pm 0.006$ & $0.832 \pm 0.005$ \\
-    CL+MLP & $0.822 \pm 0.011$ & $0.805 \pm 0.013$ & $0.811 \pm 0.012 $ \\
-    VGG & $0.827 \pm 0.003$ & $0.770 \pm 0.016$  & $ 0.784 \pm 0.014$\\
-    VGG-FT & $0.872 \pm 0.007$ & $0.844 \pm 0.015$ & $0.851 \pm 0.014 $ \\
+    FLIM+MLP & 0.863 \textpm 0.002 & \textbf{0.849 \textpm 0.005} & \textbf{0.854 \textpm 0.004}\\
+    FLIM-FT+MLP & 0.845 \textpm 0.003 & 0.825 \textpm 0.006 & 0.832 \textpm 0.005 \\
+    CL+MLP & 0.822 \textpm 0.011 & 0.805 \textpm 0.013 & 0.811 \textpm 0.012  \\
+    VGG & 0.827 \textpm 0.003 & 0.770 \textpm 0.016  &  0.784 \textpm 0.014\\
+    VGG-FT & \textbf{0.872 \textpm 0.007} & 0.844 \textpm 0.015 & 0.851 \textpm 0.014  \\
    
   \hline
   \end{tabular}
@@ -442,8 +443,9 @@ As motivated by Rauber et al. \cite{rauber2016visualizing}, we created projectio
             \hline
             Method & Precision & Recall & F-score \\
             \hline\hline
-            FLIM+SVM (4) & $0.856 \pm 0.011 $ & $ 0.831 \pm 0.019$ & $ 0.838 \pm 0.017$\\
-            FLIM+SVM (8) & $0.857 \pm 0.005$ & $0.838 \pm 0.010$ & $0.844 \pm 0.009$\\
+            FLIM+SVM (4) & 0.856 \textpm 0.011 &  0.831 \textpm 0.019 &  0.838 \textpm 0.017\\
+            FLIM+SVM (8) & \textbf{0.857 \textpm 0.005} & 0.838 \textpm 0.010 & 0.844 \textpm 0.009\\
+            FLIM+SVM (12) & 0.854 \textpm 0.005 & \textbf{0.839 \textpm 0.009} & \textbf{0.844 \textpm 0.008}\\
             \hline
         \end{tabular}
     \end{center}
