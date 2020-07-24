@@ -278,86 +278,43 @@ Each convolutional layer is trained individually, one layer at a time, to find i
 
     \end{tikzpicture}
   \end{center}
-  \caption{Pipeline to trian a feature extractor.}
+  \caption{Pipeline for training a feature extractor.}
   \label{fig:pipeline-xtractor}
-\end{figure*}
-
-  
-\begin{figure*}
-  \begin{center}
-    
-    \tikzstyle{steps} = [rectangle, rounded corners, minimum width=1.3cm, minimum height=0.5cm,text centered, draw=pink, thick, fill=heliotrope!30, execute at begin node={\begin{varwidth}{2.5cm}},
-      execute at end node={\end{varwidth}}]
-      \tikzstyle{image} = [minimum width=1.3cm, minimum height=0.7cm,text centered, draw=white,fill=white!30, inner sep=0pt]
-
-    \tikzstyle{myarrow} = [navy, thick]
-
-    \tikzstyle{arrow} = [thick,->,>=stealth]
-
-    \begin{tikzpicture}[node distance=1.5cm]
-      
-
-      %images----------------------------
-     \node (img1) [image] {\includegraphics[width=.08\textwidth]{figures/qualitative/ours/lower-coco-789.png}};
-     \node (img2) [image, below left=-5em of img1] {\includegraphics[width=.08\textwidth]{figures/qualitative/ours/lower-coco-789.png}};
-     \node (img3) [image, below left=-5em of img2] {\includegraphics[width=.08\textwidth]{figures/qualitative/ours/lower-coco-789.png}};
-
-     \node (imgs) [fit={($(img1.north west)+(-0.45,0.1)$) ($(img3.south east)+(0.45,-0.1)$)}, inner sep=0pt, draw=none, rounded corners, very thick, label = {[label distance = 0.1em]below:{Testing set}}] {};
-     %----------------------------------
-
-     \node (aft) [steps, right=2em of imgs] {Feature\\Extraction};
-
-      %images----------------------------
-    \node (f1) [image, above right=-3em and 3em of aft] {\includegraphics[width=.08\textwidth]{figures/features/f1.png}};
-    \node (f2) [image, below left=-5.5em of f1] {\includegraphics[width=.08\textwidth]{figures/features/f2.png}};
-    \node (f3) [image, below left=-5.5em of f2] {\includegraphics[width=.08\textwidth]{figures/features/f3.png}};
-    \node (f4) [image, below left=-5.5em of f3] {\includegraphics[width=.08\textwidth]{figures/features/f4.png}};
-
-    \node (features) [fit={($(f1.north west)+(-0.3,0.2)$) ($(f4.south east)+(0.3,-0.2)$)}, draw=none, inner sep=0pt, label = {[label distance = 0.1em]below:{Features}}] {};
-    %----------------------------------
-
-     \node (sup) [steps, right=2em of features] {Classification};
-
-     \node (clf) [steps, right=2em of sup, fill=none, draw=none] {Classifier};
-
-     %--------------------------------------------------------------arrows
-    
-     \draw [arrow, myarrow] (imgs) -- (aft);
-     \draw [arrow, myarrow] (aft) -- (features);
-     \draw [arrow, myarrow] (features) -- (sup);
-     \draw [arrow, myarrow] (sup) -- (clf);
-
-    \end{tikzpicture}
-  \end{center}
-  \caption{Pipeline to train a classifier.}
-  \label{fig:pipeline-classifier}
 \end{figure*}
 
 \section{Experiments}
 
 We use a dataset from~\cite{8899005}, which contains regions of aerial images with and without coconut trees from the Kingdom of Tonga, as acquired in October 2017~\footnote{The images are available in \url{blog.werobotics.org/2018/01/11/open-ai-challenge-2}.}. Each region is classified as containing one or none coconut tree, but part of coconut trees from adjacent regions might appear near the region's border. The Humanitarian OpenStreetMap community annotated the regions. The dataset consists of 13587 regions with $90 \times 90$ pixels \textcolor{red}{with spatial resolution of $8$\si{\centi\metre}}, being 10268 and 3319 regions annotated as containing and not containing coconut trees, respectively. \textcolor{red}{The region images contain three channels: red, green, and blue. We convert them to the CIE L*a*b* color space and normalize each channel within $[0,1]$}.
 
-\textcolor{red}{
-The experiments have been designed to evaluate the following hypotheses about FLIM.
+\textcolor{red}{The experiments used an Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz CPU and a Titan X with 12 GB of memory. They have been designed to evaluate the following hypotheses about FLIM.
 \begin{enumerate}
- \item[(H1)]  FLIM can produce competitive image feature extractors from user-drawn markers in a few images selected per class from a training set. 
-\item[(H2)]  For a given network architecture, FLIM can provide better classification results than those obtained by training the same architecture with backpropagation.
-\item[(H3)] Its feature extractor remains competitive independently of the training set size. 
-\item[(H4)] User-drawn markers on a higher number of selected images from the training set can improve feature extraction.
+ \item[H1]  It can produce competitive feature extractors from user-drawn markers in a few images selected per class from a training set. 
+\item[H2]  For a given network architecture, FLIM can provide better classification results than those obtained by training the same architecture with backpropagation.
+\item[H3] Its feature extractor remains competitive independently of the training set size. 
+\item[H4] User-drawn markers on a higher number of selected images can improve feature extraction.
 \end{enumerate}
 }
 
+\textcolor{red}{For these experiments, we have selected the following models that combine feature extraction and classification methods.
+ \begin{itemize}
+\item FLIM+SVM: Image classification is performed by support vector machines (SVM) on FLIM-based features.  
+\item FLIM+MLP: Image classification is performed by multi-layer perceptrons (MLP) on FLIM-based features.  
+\item FLIM-FT+MLP: The network in FLIM+MLP is fine-tuned by backpropagation. 
+\item CL+MLP: The same architecture used in FLIM+MLP is trained from scratch by backpropagation.
+\item VGG: Vgg-16~\cite{simonyan2014very} is trained from scratch.
+\item VGG-FT: Vgg-16 is pre-trained on ImageNet and fine-tuned on the coconut-tree training set.
+\item VGG-FE+SVM: Image features are obtained from the last convolutional layer of VGG-FT.
+\end{itemize}
+}
 
-To assess the impact of FLIM in reducing the need for annotated samples, we
-divided the experiments in three parts. First, we randomly selected 200 regions (100 from each class) for training, 1000 regions (500 from each class) for the choice of architecture, and left the remaining 12387 regions for testing. The architecture of the network was chosen based on empirical tests on the validation set. Second, we used the validation set to increase the size of the training set from 200 to 1200 images. 
+\textcolor{red}{First, we evaluated H1 and H2 by randomly selecting 200 images for the training set, 1000 images for a validation set, and the remaining 12387 images were left in the testing set. The validation set was used to choose empirically the architecture of the network shown in Figure~\ref{fig:arch}. The convolutional layer has $60$ filters with dimension $7 \times 7$ and 3 color channels. It includes marker-based normalization before convolution, ReLu activation, and a max-pooling operation with a window of dimension $3 \times 3$. Since it is the single and last convolutional layer, we applied a stride of $4$ in max-pooling and batch normalization to create an input as close as possible to the one of the \textcolor{red}{MLP} classifier used in the popular VGG-16~\cite{simonyan2014very}. We then vectorized and projected the training images by t-SNE~\cite{maaten2008visualizing} (Figure~\ref{fig:pipeline-xtractor}). Four representative images, only two per class, were chosen by the user to draw markers (Figure~\ref{fig:markers}). These images must come from regions in the projection populated by samples from the same class (either red or green points). Those regions indicate groups of images from the same class in the input feature space. The markers must be placed in regions that best distinguish the coconut and non-coconut classes.}
 
-\textcolor{red}{We repeated this procedure three times to compute the mean and the standard deviation of the results in precision, recall, and f-score.} By vectorizing and projecting the 200 training images of each split on 2D with t-SNE~\cite{maaten2008visualizing}, \textcolor{red}{we identified cohesive groups of images from each class and selected two representative images from each class to draw markers.}  The selected images from one split can be seen in Figure \ref{fig:markers}. We placed markers on these images in regions that we thought to better distinguish between coconut and non-coconut classes.
+\textcolor{red}{Pytorch was chosen to implement FLIM and MLP, being SVM the linear model available in sklearn with $C=0.01$~\cite{fan2008liblinear, scikit-learn}. We trained MLP for $40$ epochs and the whole network for $60$ epochs with a batch size of $64$. We used a learning rate of $0.0001$, a weight decay of $0.001$, and we updated the learning rate by a factor of $0.1$ at every $5$ epochs after epoch 30. VGG and VGG-FT were trained for $95$ epochs with a batch size of $64$, a learning rate of $0.001$, weight decay of $0.001$, and we updated the learning rate by a factor of $0.1$ at every $5$ epochs after the model achieved accuracy $0.95$.}
 
-\textcolor{red}{We have not investigated the impact of placing markers on a higher number of images and network architecture optimization procedures yet.} We just trained the single-convolutional-layer network of Figure \ref{fig:arch} from markers drawn in two images per class. The convolutional layer has $60$ filters with dimension $7 \times 7$ and 3 color channels. It includes marker-based normalization before convolution, ReLu activation, and a max-pooling operation with a window of dimension $3 \times 3$. Since it is the single and last convolutional layer, we applied a stride of $4$ in max-pooling and batch normalization to create an input as close as possible to the one of the \textcolor{red}{MLP} classifier used in the popular VGG-16~\cite{simonyan2014very}. \textcolor{red}{We use Pytorch to implement our feature extractor and the MLP classifier.The experiments used an Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz CPU and a Titan X with 12 GB of memory.} We trained the MLP classifier for $40$ epochs and the whole network for $60$ epochs with a batch size of $64$. We use a learning rate of $0.0001$, a weight decay of $0.001$, and we update the learning rate by a factor of $0.1$ every $5$ epochs after epoch 30.
+\textcolor{red}{
+Table~\ref{tab:results} shows the mean results of this first experiment for three random splits of the dataset into training, validation, and testing sets. We considered better (in bold) the results with non-overlapping intervals of standard deviation around the mean value. The comparison between FLIM+SVM and VGG-FE+SVM indicates that FLIM can produce a feature extractor with a single layer competitive to VGG-FE using 13 layers (i.e., FLIM uses only $0.07\%$ of the number of parameters in VGG-FE). The results of FLIM+MLP, CL+MLP, and FLIM-FT+MLP show that FLIM may dismiss training and fine-tuning based on backpropagation, by directly providing a more effective solution than CL+MLP and FLIM-FT+MLP. This result can also be noticed when comparing  FLIM+MLP with VGG, confirming that FLIM can reduce the number of required training images for the MLP classifier. The comparison between FLIM+MLP and VGG-FT shows competitive results with a top-rated solution.}
 
-We selected VGG-16 for comparative analysis since it usually requires many more samples than 200 to be trained from scratch. It is also a very competitive CNN when pretrained in the ImageNet dataset, working as a counterpart solution for small training sets. Therefore, as baselines, we used three solutions based on VGG-16: (1) VGG is trained from scratch, (2) VGG-FT is pretrained in the ImageNet dataset and fine-tuned in the coconut-tree training set, and (3) VGG-FE is the feature extractor of VGG-16 (the output of its last convolutional layer) pretrained in the ImageNet dataset. In this case, we used for classification the  linear SVM classifier with $C=0.01$ from sklearn~\cite{fan2008liblinear, scikit-learn}. We use Pytorch's implementation of VGG. In (1) and (2), we trained for $95$ epochs with a batch size of $64$, learning rate of $0.001$, weight decay of $0.001$, and we update learning rate by a factor of $0.1$ every $5$ epochs after the model achieves an accuracy of $0.95$.
-
-Table~\ref{tab:results} shows the results of three FLIM-based solutions using the SVM and MLP classifiers; ``FLIM+SVM'', ``FLIM+MLP'', and ``FLIM-FT+MLP'' (i.e., FLIM with fine-tuning); as compared with the VGG-based solutions above. The first two rows indicate that FLIM  can provide a more effective feature extractor using a single convolutional layer than VGG-FE, which contains 13 convolutional layers pretrained on the ImageNet. The results of ``FLIM+MLP'' and ``FLIM-FT+MLP'' show that FLIM  may dismiss fine tuning by directly providing a more effective solution. \textcolor{red}{By comparing ``FLIM+MLP'' with VGG, one can observe that FLIM reduces the number of required training images.} Finally, the comparison between \textcolor{red}{``FLIM+MLP'' and VGG-FT} demonstrates that FLIM can provide competitive results using a considerably more simplified architecture than  VGG-FT. The number of parameters of our feature extractor represents only $0.07\%$ of the number of parameter of VGG-FE.
+\textcolor{red}{To evaluate H3, we used the validation set to increase the classifiers' number of training images. Note that the marker selection for FLIM was still the same from those four images. To our surprise, as the training set increases, the differences in f-score favor FLIM+MLP over FLIM-FT+MLP, VGG-FT, and CL+MLP. The difference between FLIM+MLP and CL+MLP also demonstrated that FLIM was superior to backpropagation for filter estimation. Finally, Table II shows the results of FLIM+SVM as the number of images for marker selection increases, and the training set size remains with 200 images. We can notice a slight improvement in all measures, but this is a point that deserves further investigation -- i.e., choosing relevant training images and markers for FLIM. }  
 
 \begin{figure}[!t]
     \centering
@@ -372,7 +329,7 @@ Table~\ref{tab:results} shows the results of three FLIM-based solutions using th
     ~
     \subfloat[\label{fig:markers4}]{\includegraphics[width=.25\linewidth]{figures/markers4}
     }
-    \caption{\textcolor{red}{Markers used for training in image regions with (first column) and without (second column) a coconut tree.}}
+    \caption{\textcolor{red}{Markers used for training, cyan markers on coconut trees and orange markers on other regions.}}
     \label{fig:markers}
 \end{figure}
 
@@ -387,7 +344,7 @@ Table~\ref{tab:results} shows the results of three FLIM-based solutions using th
       
     FLIM+MLP & $0.863 \pm 0.002$ & $0.849 \pm 0.005$ & $0.854 \pm 0.004$\\
     FLIM-FT+MLP & $0.845 \pm 0.003$ & $0.825\pm 0.006$ & $0.832 \pm 0.005$ \\
-
+    CL+MLP & $0.822 \pm 0.011$ & $0.805 \pm 0.013$ & $0.811 \pm 0.012 $ \\
     VGG & $0.827 \pm 0.003$ & $0.770 \pm 0.016$  & $ 0.784 \pm 0.014$\\
     VGG-FT & $0.872 \pm 0.007$ & $0.844 \pm 0.015$ & $0.851 \pm 0.014 $ \\
    
@@ -436,28 +393,12 @@ Table~\ref{tab:results} shows the results of three FLIM-based solutions using th
   ~
   \subfloat[]{\includegraphics[width=.3\linewidth]{figures/classifier}
   \label{fig:vis-classifier}}
-  \caption{Projections by t-SNE of the test images at (a) the input layer, (b) the output of the convolutional layer of  ``FLIM + MLP'' after batch normalization (Figure~\ref{fig:arch}), and (c) the output of the last hidden layer of the MLP classifier in  ``FLIM + MLP''.}
+  \caption{Projections by t-SNE of the test images at (a) the input layer, (b) the output of the convolutional layer of  FLIM+MLP after batch normalization (Figure~\ref{fig:arch}), and (c) the output of the last hidden layer of the MLP classifier in  FLIM+MLP.}
 \end{figure}
 
-As motivated by Rauber et al. \cite{rauber2016visualizing}, we created projections of three stages of the network ``FLIM + MLP" using t-SNE \cite{maaten2008visualizing} to understand how our CNN transforms image spaces along its layers. In Figure \ref{fig:vis-input}, we can see the projection of the test images in the LAB color space. Green points are images that contain coconut trees, and red points are images that do not contain coconut trees. The projection shows considerable overlapping between the two classes. The samples of both classes are also dispersed in the projection. In Figure \ref{fig:vis-feature-extractor}, the projection of the output of our feature extractor shows some reduction in sample dispersion. The classes show more concentration in some parts of the projection and reduced overlapping between them. Finally, Figure \ref{fig:vis-classifier} shows the output of the last hidden layer of the MLP classifier in ``FLIM + MLP''. The overlapping between classes and sample dispersion are considerably reduced, explaining our results.
+As motivated by Rauber et al. \cite{rauber2016visualizing}, we created projections of three stages of the network FLIM+MLP using t-SNE \cite{maaten2008visualizing} to understand how our CNN transforms image spaces along its layers. In Figure \ref{fig:vis-input}, we can see the projection of the test images in the CIE L*a*b* color space. Green points are images that contain coconut trees, and red points are images that do not contain coconut trees. The projection shows considerable overlapping between the two classes. The samples of both classes are also dispersed in the projection. In Figure \ref{fig:vis-feature-extractor}, the projection of the output of our feature extractor shows some reduction in sample dispersion. The classes show more concentration in some parts of the projection and reduced overlapping between them. Finally, Figure \ref{fig:vis-classifier} shows the output of the last hidden layer of the MLP classifier in FLIM+MLP. The overlapping between classes and sample dispersion are considerably reduced, explaining our results.
 
-\begin{comment}
-  \begin{table}[!t]
-  \begin{center}
-  \begin{tabular}{|l|c|c|c|}
-  \hline
-   Method & Precision & Recall & F-score \\
-  \hline\hline
-    FLIM+MLP & $0.894 \pm 0.006$ & $0.888 \pm 0.009$ & $0.890 \pm 0.008$\\
-    FLIM-FT+MLP & $0.888 \pm 0.001$ & $0.878\pm 0.001$ & $0.881 \pm 0.001$ \\
-    VGG-FT & $0.884 \pm 0.003$ & $0.877 \pm 0.006$ & $0.879 \pm 0.005 $ \\
-  \hline
-  \end{tabular}
-  \end{center}
-  \caption{Mean and standard deviation of precision, recall, and f-score for each method: a feature extractor with a classifier with a larger train set.}
-    \label{tab:results-with-1200-images}
-  \end{table}
-\end{comment}
+
 
 
 
@@ -492,6 +433,23 @@ As motivated by Rauber et al. \cite{rauber2016visualizing}, we created projectio
 \end{tikzpicture}
 \caption{Graph showing the impact of training set size on quantitative results. FLIM+MLP feature extractor was trained only with four images, and the remaining training set was used to train the MLP classifier.}
 \end{figure}
+
+
+
+\begin{table}[!t]
+    \begin{center}
+        \begin{tabular}{|l|c|c|c|}
+            \hline
+            Method & Precision & Recall & F-score \\
+            \hline\hline
+            FLIM+SVM (4) & $0.856 \pm 0.011 $ & $ 0.831 \pm 0.019$ & $ 0.838 \pm 0.017$\\
+            FLIM+SVM (8) & $0.857 \pm 0.005$ & $0.838 \pm 0.010$ & $0.844 \pm 0.009$\\
+            \hline
+        \end{tabular}
+    \end{center}
+    \caption{Mean and standard deviation of precision, recall, and f-score for each method: a feature extractor trained with 8 images and a SVM classifier.}
+    \label{tab:results-more-markers}
+\end{table}
 
 \section{Conclusion}
 
