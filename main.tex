@@ -244,7 +244,7 @@ Each convolutional layer is trained individually, one layer at a time, to find i
     \node (simgs) [fit={($(simg1.north west)+(-0.64,0.2)$) ($(simg4.south east)+(0.64,-0.2)$)}, inner sep=0pt, draw=none, label = {[label distance = 0.0em]above:{Selected images}}] {};
     %----------------------------------
 
-     \node (put) [steps, right=1em of simgs] {Select\\Markers};
+     \node (put) [steps, right=1em of simgs] {Draw\\Markers};
 
      %images----------------------------
     \node (mimg1) [image, above right=-2em and 2.8em of put] {\includegraphics[width=.08\textwidth]{figures/markers1.png}};
@@ -279,13 +279,13 @@ Each convolutional layer is trained individually, one layer at a time, to find i
 
     \end{tikzpicture}
   \end{center}
-  \caption{\textcolor{red}{Pipeline for training a feature extractor. In the projection, green points are images with coconut trees, and red points are images with no coconut trees. Orange markers denote background regions, and cyan markers denote coconut tree regions.}}
+  \caption{\textcolor{red}{Pipeline for training a feature extractor using FLIM. In the projection, green points are images with coconut trees, and red points are images with no coconut trees. The user selects a few images (e.g., 4) from the projection. The user draws orange markers on background pixels and cyan markers on coconut-tree pixels for image feature learning by FLIM.}}
   \label{fig:pipeline-xtractor}
 \end{figure*}
 
 \section{Experiments}
 
-We use a dataset from~\cite{8899005}, which contains regions of aerial images with and without coconut trees from the Kingdom of Tonga, as acquired in October 2017~\footnote{The images are available in \url{blog.werobotics.org/2018/01/11/open-ai-challenge-2}.}. Each region is classified as containing one or none coconut tree, but part of coconut trees from adjacent regions might appear near the region's border. The Humanitarian OpenStreetMap community annotated the regions. The dataset consists of 13587 regions with $90 \times 90$ pixels \textcolor{red}{with spatial resolution of $8$\si{\centi\metre}}, being 10268 and 3319 regions annotated as containing and not containing coconut trees, respectively. \textcolor{red}{The region images contain three bands: red, green, and blue. We convert them to the CIE L*a*b* color space and normalize each band within $[0,1]$}.
+We use a dataset from~\cite{8899005}, which contains regions of aerial images with and without coconut trees from the Kingdom of Tonga, as acquired in October 2017~\footnote{The images are available in \url{blog.werobotics.org/2018/01/11/open-ai-challenge-2}.}. Each region is classified as containing one or none coconut tree, but part of coconut trees from adjacent regions might appear near the region's border. The Humanitarian OpenStreetMap community annotated the regions. The dataset consists of 13587 regions with $90 \times 90$ pixels \textcolor{red}{and spatial resolution of $8$\si{\centi\metre}}, being 10268 and 3319 regions annotated as containing and not containing coconut trees, respectively. \textcolor{red}{The region images contain three bands: red, green, and blue. We convert them to the CIE L*a*b* color space and normalize each band within $[0,1]$}.
 
 \textcolor{red}{The experiments used an Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz CPU and a Titan X with 12 GB of memory. They have been designed to evaluate the following hypotheses about FLIM.
 \begin{enumerate}
@@ -298,13 +298,14 @@ We use a dataset from~\cite{8899005}, which contains regions of aerial images wi
 
 \textcolor{red}{For these experiments, we have selected the following models that combine feature extraction and classification methods.
  \begin{itemize}
-  \item FLIM+SVM: Image classification is performed by support vector machines (SVM) on FLIM-based features.  
-  \item FLIM+MLP: Image classification is performed by multi-layer perceptrons (MLP) on FLIM-based features.  
-  \item FLIM-FT+MLP: The network in FLIM+MLP is fine-tuned by backpropagation. 
-  \item CL+MLP: The same architecture used in FLIM+MLP is trained from scratch by backpropagation.
-  \item VGG: Vgg-16~\cite{simonyan2014very} is trained from scratch.
-  \item VGG-FT: Vgg-16 is pre-trained on ImageNet and fine-tuned on the coconut-tree training set.
-  \item VGG-FE+SVM: Image features are obtained from the last convolutional layer of VGG-FT.
+    \item FLIM+SVM: Image classification is performed by support vector machines (SVM) from FLIM-based features.  
+    \item FLIM+MLP: Image classification is performed by multi-layer perceptrons (MLP) from FLIM-based features.  
+    \item FLIM-FT+MLP: The architecture in FLIM+MLP is fine-tuned by backpropagation. 
+    \item CL+MLP: The architecture in FLIM+MLP is trained from scratch by backpropagation.
+    \item VGG: VGG-16~\cite{simonyan2014very} is trained from scratch.
+    \item VGG-FT: VGG-16 is pre-trained on ImageNet and fine-tuned on the coconut-tree training set.
+    \item VGG-FE+SVM: Image features are obtained from the last convolutional layer of VGG-FT.
+
 \end{itemize}
 }
 
@@ -313,9 +314,10 @@ We use a dataset from~\cite{8899005}, which contains regions of aerial images wi
 \textcolor{red}{Pytorch was chosen to implement FLIM and MLP, being SVM the linear model available in scikit-learn with $C=0.01$~\cite{fan2008liblinear, scikit-learn}. We trained MLP for $40$ epochs and the whole network for $60$ epochs with a batch size of $64$. We used a learning rate of $0.0001$, a weight decay of $0.001$, and we updated the learning rate by a factor of $0.1$ at every $5$ epochs after epoch 30. VGG and VGG-FT were trained for $95$ epochs with a batch size of $64$, a learning rate of $0.001$, weight decay of $0.001$, and we updated the learning rate by a factor of $0.1$ at every $5$ epochs after the model achieved accuracy $0.95$.}
 
 \textcolor{red}{
-Table~\ref{tab:results} shows the mean results of this first experiment for three random splits of the dataset into training, validation, and testing sets. We considered better (in bold) the results with non-overlapping intervals of standard deviation around the mean value. The comparison between FLIM+SVM and VGG-FE+SVM indicates that FLIM can produce a feature extractor with a single layer competitive to VGG-FE using 13 layers (i.e., FLIM uses only $0.07\%$ of the number of parameters in VGG-FE). The results of FLIM+MLP, CL+MLP, and FLIM-FT+MLP show that FLIM may dismiss training and fine-tuning based on backpropagation, by directly providing a more effective solution than CL+MLP and FLIM-FT+MLP. This result can also be noticed when comparing  FLIM+MLP with VGG, confirming that FLIM can reduce the number of required training images for the MLP classifier. The comparison between FLIM+MLP and VGG-FT shows competitive results with a top-rated solution.}
+Table~\ref{tab:results} shows the mean results of this first experiment for three random splits of the dataset into training, validation, and testing sets. We considered better (in bold) the results with non-overlapping intervals of standard deviation around the mean value. The comparison between FLIM+SVM and VGG-FE+SVM indicates that FLIM can produce a feature extractor with a single layer competitive to VGG-FE using 13 layers (i.e., FLIM uses only $0.07\%$ of the number of parameters in VGG-FE). The results of FLIM+MLP, CL+MLP, and FLIM-FT+MLP show that FLIM may dismiss training and fine-tuning based on backpropagation, by directly providing a more effective solution than CL+MLP and FLIM-FT+MLP (H2). This result can also be noticed when comparing  FLIM+MLP with VGG, confirming that FLIM can reduce the number of required training images for the MLP classifier. The comparison between FLIM+MLP and VGG-FT shows competitive results with a top-rated solution (H1).}
 
-\textcolor{red}{To evaluate H3, we used the validation set to increase the classifiers' number of training images. Note that the marker selection for FLIM was still the same from those four images. To our surprise, as the training set increases, the differences in f-score favor FLIM+MLP over FLIM-FT+MLP, VGG-FT, and CL+MLP. The difference between FLIM+MLP and CL+MLP also demonstrated that FLIM was superior to backpropagation for filter estimation. Finally, Table II shows the results of FLIM+SVM as the number of images for marker selection increases, and the training set size remains with 200 images. We can notice a slight improvement in all measures, but this is a point that deserves further investigation -- i.e., choosing relevant training images and markers for FLIM.}  
+\textcolor{red}{To evaluate H3, we used the validation set to increase the classifiers' number of training images. Note that the marker selection for FLIM was still the same from those four images. As the training set increases, the mean differences in f-score, as obtained among the three splits, favor FLIM+MLP over FLIM-FT+MLP (H2), VGG-FT (H1 and H3), and CL+MLP (H2). The differences between FLIM+MLP and CL+MLP demonstrate that FLIM is superior to backpropagation in filter estimation (H2). Finally, Table II shows the mean results of FLIM+SVM among the three splits as the number of images for marker selection increases, and the training set size remains with 200 images (H4). The results are not conclusive for H4, but the choice of more markers does not deteriorate the performance of FLIM. This point deserves further investigation -- i.e., choosing relevant training images and markers for FLIM. }  
+
 
 \begin{figure}[!t]
     \centering
@@ -330,7 +332,7 @@ Table~\ref{tab:results} shows the mean results of this first experiment for thre
     ~
     \subfloat[\label{fig:markers4}]{\includegraphics[width=.25\linewidth]{figures/markers4}
     }
-    \caption{\textcolor{red}{Markers used for training, cyan markers on coconut trees and orange markers on other regions.}}
+    \caption{\textcolor{red}{Markers used for training, cyan markers on coconut-tree pixels and orange markers on background pixels.}}
     \label{fig:markers}
 \end{figure}
 
@@ -343,11 +345,11 @@ Table~\ref{tab:results} shows the mean results of this first experiment for thre
     FLIM+SVM & 0.856 \textpm 0.011  &  0.831 \textpm 0.019 & 0.838 \textpm 0.017\\ 
     VGG-FE+SVM & 0.855 \textpm 0.001 & 0.816 \textpm 0.007 & 0.826 \textpm 0.006  \\\hline
       
-    FLIM+MLP & 0.863 \textpm 0.002 & \textbf{0.849 \textpm 0.005} & \textbf{0.854 \textpm 0.004}\\
+    FLIM+MLP & \textbf{0.863 \textpm 0.002} & \textbf{0.849 \textpm 0.005} & \textbf{0.854 \textpm 0.004}\\
     FLIM-FT+MLP & 0.845 \textpm 0.003 & 0.825 \textpm 0.006 & 0.832 \textpm 0.005 \\
     CL+MLP & 0.822 \textpm 0.011 & 0.805 \textpm 0.013 & 0.811 \textpm 0.012  \\
     VGG & 0.827 \textpm 0.003 & 0.770 \textpm 0.016  &  0.784 \textpm 0.014\\
-    VGG-FT & \textbf{0.872 \textpm 0.007} & 0.844 \textpm 0.015 & 0.851 \textpm 0.014  \\
+    VGG-FT & \textbf{0.872 \textpm 0.007} & \textbf{0.844 \textpm 0.015} & \textbf{0.851 \textpm 0.014}  \\
    
   \hline
   \end{tabular}
@@ -397,7 +399,7 @@ Table~\ref{tab:results} shows the mean results of this first experiment for thre
   \caption{Projections by t-SNE of the test images at (a) the input layer, (b) the output of the convolutional layer of  FLIM+MLP after batch normalization (Figure~\ref{fig:arch}), and (c) the output of the last hidden layer of the MLP classifier in  FLIM+MLP.}
 \end{figure}
 
-As motivated by Rauber et al. \cite{rauber2016visualizing}, we created projections of three stages of the network FLIM+MLP using t-SNE \cite{maaten2008visualizing} to understand how our CNN transforms image spaces along its layers. In Figure \ref{fig:vis-input}, we can see the projection of the test images in the CIE L*a*b* color space. Green points are images that contain coconut trees, and red points are images that do not contain coconut trees. The projection shows considerable overlapping between the two classes. The samples of both classes are also dispersed in the projection. In Figure \ref{fig:vis-feature-extractor}, the projection of the output of our feature extractor shows some reduction in sample dispersion. The classes show more concentration in some parts of the projection and reduced overlapping between them. Finally, Figure \ref{fig:vis-classifier} shows the output of the last hidden layer of the MLP classifier in FLIM+MLP. The overlapping between classes and sample dispersion are considerably reduced, explaining our results.
+As motivated by Rauber et al. \cite{rauber2016visualizing}, we created projections of three stages of the network FLIM+MLP using t-SNE \cite{maaten2008visualizing} to understand how our CNN transforms image spaces along its layers. In Figure \ref{fig:vis-input}, we can see the projection of the test images in the \textcolor{red}{CIE L*a*b* color space.} Green points are images that contain coconut trees, and red points are images that do not contain coconut trees. The projection shows considerable overlapping between the two classes. The samples of both classes are also dispersed in the projection. In Figure \ref{fig:vis-feature-extractor}, the projection of the output of our feature extractor shows some reduction in sample dispersion. The classes show more concentration in some parts of the projection and reduced overlapping between them. Finally, Figure \ref{fig:vis-classifier} shows the output of the last hidden layer of the MLP classifier in FLIM+MLP. The overlapping between classes and sample dispersion are considerably reduced, explaining our results.
 
 
 
@@ -444,8 +446,8 @@ As motivated by Rauber et al. \cite{rauber2016visualizing}, we created projectio
             Method & Precision & Recall & F-score \\
             \hline\hline
             FLIM+SVM (4) & 0.856 \textpm 0.011 &  0.831 \textpm 0.019 &  0.838 \textpm 0.017\\
-            FLIM+SVM (8) & \textbf{0.857 \textpm 0.005} & 0.838 \textpm 0.010 & 0.844 \textpm 0.009\\
-            FLIM+SVM (12) & 0.854 \textpm 0.005 & \textbf{0.839 \textpm 0.009} & \textbf{0.844 \textpm 0.008}\\
+            FLIM+SVM (8) & 0.857 \textpm 0.005 & 0.838 \textpm 0.010 & 0.844 \textpm 0.009\\
+            FLIM+SVM (12) & 0.854 \textpm 0.005 & 0.839 \textpm 0.009 & 0.844 \textpm 0.008\\
             \hline
         \end{tabular}
     \end{center}
@@ -455,7 +457,7 @@ As motivated by Rauber et al. \cite{rauber2016visualizing}, we created projectio
 
 \section{Conclusion}
 
-We introduced a first feature learning technique, named FLIM, that can estimate effective filter weights for the convolutional layers of a given network architecture from user-drawn markers in a few training images. The resulting feature extractor can be used with different classifiers and, when it is used with a MLP classifier, the number of required images to train the fully connected layers is reduced. We demonstrated the advantages of FLIM over solutions based on VGG-16 for the binary classification of coconut-tree images. The experiments indicated that FLIM is an effective approach to produce considerably simplified network architectures. By involving the user in the training process, FLIM improves the understanding about CNN models and the user control over the training process. 
+We introduced a first feature learning technique, named FLIM, that can estimate effective filter weights for the convolutional layers of a given network architecture from user-drawn markers \textcolor{red}{in a few images of a training set.} The resulting feature extractor can be used with different classifiers and, when it is used with a MLP classifier, the number of required images to train the fully connected layers is reduced. We demonstrated the advantages of FLIM over solutions based on VGG-16 for the binary classification of coconut-tree images. The experiments indicated that FLIM is an effective approach to produce considerably simplified network architectures. By involving the user in the training process, FLIM improves the understanding about CNN models and the user control over the training process. 
 
 We intend to further investigate feature learning from image markers for different applications, elaborate methodologies to optimize network architecture, and extend FLIM to estimate weights in fully connected layers.   
 
