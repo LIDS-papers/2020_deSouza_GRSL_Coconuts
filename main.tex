@@ -245,7 +245,7 @@ Each convolutional layer is trained individually, one layer at a time, to find i
      \node (put) [steps, right=1em of simgs] {Draw\\Markers};
 
      %images----------------------------
-    \node (mimg1) [image, above right=-2em and 2.8em of put] {\includegraphics[width=.08\textwidth]{figures/markers1.png}};
+    \node (mimg1) [image, above right=-2.5em and 2.8em of put] {\includegraphics[width=.08\textwidth]{figures/markers1.png}};
     \node (mimg2) [image, below left=-5em of mimg1] {\includegraphics[width=.08\textwidth]{figures/markers2.png}};
     \node (mimg3) [image, below left=-5em of mimg2] {\includegraphics[width=.08\textwidth]{figures/markers3.png}};
     \node (mimg4) [image, below left=-5em of mimg3] {\includegraphics[width=.08\textwidth]{figures/markers4.png}};
@@ -273,7 +273,13 @@ Each convolutional layer is trained individually, one layer at a time, to find i
      \draw [arrow, myarrow] (user) -- (put);
 
      \draw [decorate,decoration={brace,amplitude=4pt,raise=5pt}]
-(img3.north west) -- (img1.north west) node [black,midway,xshift=-0.4cm, yshift=0.4cm, rotate=45] {200};
+(img3.north west) -- (img1.north west) node [black,midway,xshift=-0.4cm, yshift=0.4cm, rotate=45] {\small 200};
+
+\draw [decorate,decoration={brace,amplitude=4pt,raise=5pt}]
+(simg4.north west) -- (simg1.north west) node [black,midway,xshift=-0.4cm, yshift=0.4cm, rotate=45] {\small 4};
+
+\draw [decorate,decoration={brace,amplitude=4pt,raise=5pt}]
+(mimg4.north west) -- (mimg1.north west) node [black,midway,xshift=-0.4cm, yshift=0.4cm, rotate=45] {\small 4};
 
     \end{tikzpicture}
   \end{center}
@@ -315,7 +321,6 @@ We use a dataset from~\cite{8899005}, which contains regions of aerial images wi
 Table~\ref{tab:results} shows the mean results of this first experiment for three random splits of the dataset into training, validation, and testing sets. We considered better (in bold) the results with non-overlapping intervals of standard deviation around the mean value. The comparison between FLIM+SVM and VGG-FE+SVM indicates that FLIM can produce a feature extractor with a single layer competitive to VGG-FE using 13 layers (i.e., FLIM uses only $0.07\%$ of the number of parameters in VGG-FE). The results of FLIM+MLP, CL+MLP, and FLIM-FT+MLP show that FLIM may dismiss training and fine-tuning based on backpropagation, by directly providing a more effective solution than CL+MLP and FLIM-FT+MLP (H2). This result can also be noticed when comparing  FLIM+MLP with VGG, confirming that FLIM can reduce the number of required training images for the MLP classifier. The comparison between FLIM+MLP and VGG-FT shows competitive results with a top-rated solution (H1).}
 
 \textcolor{red}{To evaluate H3, we used the validation set to increase the classifiers' number of training images. Note that the marker selection for FLIM was still the same from those four images. To our surprise, as the training set increases, the mean differences in f-score, as obtained among the three splits, favor FLIM+MLP over FLIM-FT+MLP (H2), VGG-FT (H1 and H3), and CL+MLP (H2). The differences between FLIM+MLP and CL+MLP demonstrate that FLIM is superior to backpropagation in filter estimation (H2). Finally, Table II shows the mean results of FLIM+SVM among the three splits as the number of images for marker selection increases, and the training set size remains with 200 images (H4). The results are not conclusive for H4, but the choice of more markers does not deteriorate the performance of FLIM. This point deserves further investigation -- i.e., choosing relevant training images and markers for FLIM. }  
-
 
 \begin{figure}[!t]
     \centering
