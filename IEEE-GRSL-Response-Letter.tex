@@ -97,15 +97,21 @@ This sentence was removed. The dataset was randomly divided into training, valid
 
 \rwr{2} Pg. 9 - Lines 14-18: Justify the choice of all hyperparameters (E.g. epochs, batch size, learning rate, etc). Have any previous experiments been made to tune these hyperparameters? Has the same dataset been used?
 
-\ans Thanks to have pointed it out\eans
+\ans Thanks to have pointed it out. We are now explaining that the dataset is randomly divided into training (200 images), validation (1000 images), and testing (remaining images) sets. We repeated each experiment three times, each using one of these random splits. However, the validation set was used only once to choose the hyperparameters of the network. We have not developed/used any optimization technique for this purpose. We have just executed tests with a few hyperparameter choices in order to select one for the experiments. The idea was to select the simplest and yet effective network in order to demonstrate that FLIM can create competitive solutions. We are clarifying this issue (Section III) and indicating it for future work (Section IV). 
+\eans
 
 \rwr{2} Pg. 10 - Table 1: The F-score difference from FLIM+MLP (0.854) and VGG+FT (0.851) is statistically significant considering the standard deviation?  Has a statistical hypothesis test been applied?
 
-\ans \eans
+\ans 
+
+For three splits only and 200 training images, it was not possible to claim that this difference is statistically significant. However, they are undoubtedly competitive, being FLIM+MLP a much simpler (lighter) network than VGG-FT. Even with a new experiment in which we increase the training set up to 1200 images, the difference increases in favor of FLIM+MLP, but they are still not statistically significant (except for one case with 1100 images). On the other hand, the f-score curve of FLIM+MLP was consistently above one of VGG-FT. We have improved the experimental section to clarify this and several other issues.  
+\eans
 
 \rwr{2} Pg. 11 - It would be worth investigating or discussing if the time taken to mark some images is always less than the time take to produce more labeled images (E.g.: how many new labeled images would take for VGG+FT beat FLIMP+MLP?). Is there a trade-off?
 
-\ans \eans
+\ans Thanks a lot for raising these questions. We noticed that it was not clear that markers are drawn on a few images selected from the training set (we used only four images). The user takes a couple of minutes to select images and draw markers in those images. This is much less than the time taken to examine and label 200 images. We also added an experiment with increasing training set sizes. VGG-FT could never beat FLIM+MLP. The reason is that the image features of FLIM are better than those of VGG-FE (the one extracted from the last convolutional layer of VGG-FT), and both use a similar MLP (the only difference is its input layer). So, higher is the number of training samples, MLP can improve the f-score of both, being the one of FLIM+MLP always above the one o    
+
+\eans
 
 \rwr{2} Pg. 12 - It seems that the literature review outdated (only one 2019/2020 work and from the same authors).
 
