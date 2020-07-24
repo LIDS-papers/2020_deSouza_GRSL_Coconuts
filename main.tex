@@ -170,38 +170,36 @@ Each convolutional layer is trained individually, one layer at a time, to find i
 
 \begin{figure*}
   \begin{center}
-  \tikzset{
-    treenode/.style = {shape=rectangle, rounded corners,
-                       draw=black, align=center, line width=width, minimum width=2cm},
-    specialedge/.style = {line width=1.5pt}
-  }
+  
+    \tikzstyle{steps} = [rectangle, rounded corners, minimum width=1.3cm, minimum height=0.5cm,text centered, draw=dodgerBlue, very thick, fill=dodgerBlue!25, execute at begin node={\begin{varwidth}{2.5cm}},
+      execute at end node={\end{varwidth}}]
+  
+      \tikzstyle{myarrow} = [navy, very thick]
+  
+      \tikzstyle{arrow} = [thick,->,>=stealth]
 
   \begin{tikzpicture}
-    [
-      grow                    = right,
-      sibling distance        = 5em,
-      level distance          = 30mm,
-      edge from parent/.style = {draw=black, -latex},
-      every node/.style       = {treenode},
-      sloped
-    ]
-    \node [treenode, fill=tealDeer] {MarkerBased \\ BatchNorm}
-    child {
-        node [treenode, fill=tealDeer] {Conv$(60 \times 7 \times 7)$}
-        child {
-          node [treenode, fill=tealDeer] {ReLU} 
-          child {
-            node [treenode, fill=tealDeer] {MaxPool$(3\times3)$}
-            child {
-              node [treenode, fill=tealDeer] {BatchNorm}
-              child {
-                node [treenode, fill=navyPurple] {Classifier}
-                edge from parent
-              }
-            }
-          } 
-        }
-      };
+    
+    \node (mbn) [steps] {MarkerBased \\ BatchNorm};
+
+    \node (conv) [steps, right= of mbn] {Conv$(60 \times 7 \times 7)$};
+       
+    \node (relu) [steps, right= of conv] {ReLU}; 
+
+    \node (pool) [steps, right=of relu] {MaxPool$(3\times3)$};
+
+    \node (bn) [steps, right=of pool] {BatchNorm};
+
+    \node (clf) [steps, fill=navyPurple!25, draw=navyPurple, right= of bn] {Classifier};
+                
+
+    %-----------------------arrows---------------
+
+    \draw [arrow, myarrow] (mbn) -- (conv);
+    \draw [arrow, myarrow] (conv) -- (relu);
+    \draw [arrow, myarrow] (relu) -- (pool);
+    \draw [arrow, myarrow] (pool) -- (bn);
+    \draw [arrow, myarrow] (bn) -- (clf);
 
   \end{tikzpicture}
   \end{center}
@@ -212,11 +210,11 @@ Each convolutional layer is trained individually, one layer at a time, to find i
 \begin{figure*}
   \begin{center}
     
-    \tikzstyle{steps} = [rectangle, rounded corners, minimum width=1.3cm, minimum height=0.5cm,text centered, draw=pink, thick, fill=heliotrope!30, execute at begin node={\begin{varwidth}{2.5cm}},
+    \tikzstyle{steps} = [rectangle, rounded corners, minimum width=1.3cm, minimum height=0.5cm,text centered, draw=pink, very thick, fill=heliotrope!30, execute at begin node={\begin{varwidth}{2.5cm}},
     execute at end node={\end{varwidth}}]
     \tikzstyle{image} = [minimum width=1.3cm, minimum height=0.7cm,text centered, draw=white,fill=white!30, inner sep=0pt]
 
-    \tikzstyle{myarrow} = [navy, thick]
+    \tikzstyle{myarrow} = [navy, very thick]
 
     \tikzstyle{arrow} = [thick,->,>=stealth]
 
