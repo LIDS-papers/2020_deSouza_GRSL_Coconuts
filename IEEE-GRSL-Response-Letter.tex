@@ -56,7 +56,8 @@ Thanks for the comments. We have improved the experimental section with new expe
 
 \rwr{1} with resolution under 10 $cm^2$; LAB color space; 11387 regions; MLP classifier; 
 
-\ans Thanks. These are minor corrections in different parts of Section III that have been solved now. \eans
+\ans Thanks. These are minor corrections in different parts of Section III that have been solved now. We refer to the following link to a good explanation of LAB color space \url{https://en.wikipedia.org/wiki/CIELAB_color_space}. 
+\eans
 
 \rwr{1} We repeated this procedure three times to compute the mean and the standard deviation of the results in precision, recall, and f-score. 
 
@@ -64,7 +65,7 @@ Thanks for the comments. We have improved the experimental section with new expe
 This sentence was removed. The dataset was randomly divided into training, validation, and testing sets. The validation set was used only once to choose empirically the architecture of the CNN through some preliminary tests. The mean results with standard deviation were computed based on those three random splits, using their respective training and testing sets. We hope this is clear in Section III now. 
 \eans
 
-\rwr{1} we identified cohesive groups of images from each class and selected two representative images from each class to draw markers.}  
+\rwr{1} we identified cohesive groups of images from each class and selected two representative images from each class to draw markers.  
 
 \ans We have changed the way to explain the choice of representative images from each class to draw markers. The new Figure 3 also helps in that explanation. \eans
 
@@ -97,7 +98,7 @@ This sentence was removed. The dataset was randomly divided into training, valid
 
 \rwr{2} Pg. 9 - Lines 14-18: Justify the choice of all hyperparameters (E.g. epochs, batch size, learning rate, etc). Have any previous experiments been made to tune these hyperparameters? Has the same dataset been used?
 
-\ans Thanks to have pointed it out. We are now explaining that the dataset is randomly divided into training (200 images), validation (1000 images), and testing (remaining images) sets. We repeated each experiment three times, each using one of these random splits. However, the validation set was used only once to choose the hyperparameters of the network. We have not developed/used any optimization technique for this purpose. We have just executed tests with a few hyperparameter choices in order to select one for the experiments. The idea was to select the simplest and yet effective network in order to demonstrate that FLIM can create competitive solutions. We are clarifying this issue (Section III) and indicating it for future work (Section IV). 
+\ans Thanks to have pointed it out. We are now explaining that the dataset is randomly divided into training (200 images), validation (2000 images), and testing (remaining images) sets. We repeated each experiment three times, each using one of these random splits. However, the validation set was used only once to choose the hyperparameters of the network. We have not developed/used any optimization technique for this purpose. We have just executed tests with a few hyperparameter choices in order to select one for the experiments. The idea was to select the simplest and yet effective network in order to demonstrate that FLIM can create competitive solutions. We are clarifying this issue (Section III) and indicating it for future work (Section IV). 
 \eans
 
 \rwr{2} Pg. 10 - Table 1: The F-score difference from FLIM+MLP (0.854) and VGG+FT (0.851) is statistically significant considering the standard deviation?  Has a statistical hypothesis test been applied?
