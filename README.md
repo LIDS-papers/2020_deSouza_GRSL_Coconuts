@@ -1,2 +1,2 @@
-# cocotrees-paper
-Paper for EARTH VISION 2020.
+# Learning CNN filters from user-drawn image markers for coconut-tree image classification
+Paper for GRSL Special Stream.
